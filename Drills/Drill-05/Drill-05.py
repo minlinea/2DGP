@@ -36,7 +36,7 @@ def straight_move():
         character.clip_draw(frame * image_point, facing_direction * image_point, image_size, image_size, character_x, character_y)
         grass.draw(grass_pibotx, grass_piboty)
         update_canvas()
-        frame = (frame + 1) % 8
+        frame = (frame+1)% 8
         character_x, character_y = movement_calculation(character_x, character_y, destination_x, destination_y)
         delay(0.05)
         get_events()
@@ -61,7 +61,13 @@ def moving_direction(character_X, now_indexX, next_indexX):
     pass
 
 def movement_calculation(x1, y1, x2, y2):
+    global facing_direction
     momentum_control = 10
+    #if(((x2-x1)/momentum_control)*((x2-x1)/momentum_control) < 2):
+    #    if(facing_direction == 0):
+    #        facing_direction = 2
+    #    elif (facing_direction == 1):
+    #        facing_direction = 3
     return x1 + (x2-x1) / momentum_control, y1 + ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
 
 def move_to_point():
