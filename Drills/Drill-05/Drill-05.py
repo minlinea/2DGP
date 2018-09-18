@@ -50,7 +50,6 @@ def move_left_to_center():
         x += 2
         delay(0.01)
 
-
 def make_rectangle():
     move_from_center_to_right()
     move_up()
