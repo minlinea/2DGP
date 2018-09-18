@@ -47,13 +47,13 @@ def straight_move():
 def moving_direction(character_X, now_indexX, next_indexX):
     global facing_direction
     if(next_indexX - now_indexX > 0):
-        if  (character_X + 1 < next_indexX):
+        if (character_X + 1 < next_indexX):
             facing_direction = 1
             return True
         else:
             return False
     else:
-        if  (character_X > next_indexX + 1):
+        if (character_X > next_indexX + 1):
             facing_direction = 0
             return True
         else:
