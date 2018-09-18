@@ -28,9 +28,7 @@ next_index = now_index+1
 frame = 0
 
 def straight_move():
-    global frame
-    global now_index
-    global next_index
+    global frame, now_index, next_index
     character_x, character_y = point_dictionary[now_index]
     destination_x, destination_y =  point_dictionary[next_index]
     while (moving_direction(character_x, point_dictionary[now_index][0], point_dictionary[next_index][0])):
@@ -64,9 +62,7 @@ def moving_direction(character_X, now_indexX, next_indexX):
 
 def movement_calculation(x1, y1, x2, y2):
     momentum_control = 10
-    x1 += (x2-x1) / momentum_control
-    y1 += ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
-    return x1, y1
+    return x1 + (x2-x1) / momentum_control, y1 + ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
 
 def move_to_point():
     straight_move()
