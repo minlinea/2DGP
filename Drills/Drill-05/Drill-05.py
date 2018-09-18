@@ -6,8 +6,13 @@ grass = load_image('grass.png')
 character = load_image('character.png')
 
 def straight_move():
+    x, y = 203, 535
+    x, y = movement_calculation(x,y)
     pass
 
+def movement_calculation(x,y):
+    return x, y
+    pass
 
 def move_to_point():
     straight_move()
