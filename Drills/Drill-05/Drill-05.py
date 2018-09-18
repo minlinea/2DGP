@@ -22,6 +22,7 @@ image_point = 100
 
 grass_pibotx, grass_piboty = 400, 30
 
+facing_direction = 0
 now_index = 0
 next_index = now_index+1
 frame = 0
@@ -30,13 +31,11 @@ def straight_move():
     global frame
     global now_index
     global next_index
-    if(now_index == 9):
-        next_index = 0
     character_x, character_y = point_dictionary[now_index]
     destination_x, destination_y =  point_dictionary[next_index]
-    while (character_x < point_dictionary[now_index][0]+ 1):
+    while (moving_direction(character_x, point_dictionary[now_index][0], point_dictionary[next_index][0])):
         clear_canvas()
-        character.clip_draw(frame * image_point, 0 * image_point, image_size, image_size, character_x, character_y)
+        character.clip_draw(frame * image_point, facing_direction * image_point, image_size, image_size, character_x, character_y)
         grass.draw(grass_pibotx, grass_piboty)
         update_canvas()
         frame = (frame + 1) % 8
@@ -44,7 +43,25 @@ def straight_move():
         delay(0.05)
         get_events()
     now_index = (now_index + 1) % 10
+    if(now_index == 9):
+        next_index = 0
     pass
+
+def moving_direction(character_X, now_indexX, next_indexX):
+    if(next_indexX - now_indexX > 0):
+        if  (character_X + 1 < next_indexX):
+            return True
+        else:
+            return False
+    else:
+        if  (character_X > next_indexX + 1):
+            return True
+        else:
+            return False
+    pass
+
+
+
 
 def movement_calculation(x1, y1, x2, y2):
     momentum_control = 10
