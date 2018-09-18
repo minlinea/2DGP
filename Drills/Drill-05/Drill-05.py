@@ -43,25 +43,24 @@ def straight_move():
         delay(0.05)
         get_events()
     now_index = (now_index + 1) % 10
-    if(now_index == 9):
-        next_index = 0
-    pass
+    next_index = (now_index + 1) % 10
+    character_x, character_y = point_dictionary[now_index]
 
 def moving_direction(character_X, now_indexX, next_indexX):
+    global facing_direction
     if(next_indexX - now_indexX > 0):
         if  (character_X + 1 < next_indexX):
+            facing_direction = 1
             return True
         else:
             return False
     else:
         if  (character_X > next_indexX + 1):
+            facing_direction = 0
             return True
         else:
             return False
     pass
-
-
-
 
 def movement_calculation(x1, y1, x2, y2):
     momentum_control = 10
