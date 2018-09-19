@@ -51,6 +51,10 @@ def straight_move():
     next_index = (now_index + 1) % 10
     character_x, character_y = point_dictionary[now_index]
 
+def draw_scene()
+    pass
+
+
 def moving_direction(character_X, now_indexX, next_indexX):
     global facing_point
     if(next_indexX - now_indexX > 0):
