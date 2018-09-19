@@ -26,33 +26,34 @@ facing_point = 0
 
 image_size = 100
 image_point = 100
-
 grass_pibotx, grass_piboty = 400, 30
-
 
 now_index = 0
 next_index = now_index+1
 frame = 0
 
+
 def straight_move():
-    global frame, now_index, next_index
+    global now_index, next_index
     character_x, character_y = point_dictionary[now_index]
     destination_x, destination_y =  point_dictionary[next_index]
     while (moving_direction(character_x, point_dictionary[now_index][0], point_dictionary[next_index][0])):
-        clear_canvas()
-        character.clip_draw(frame * image_point, facing_direction[facing_point] * image_point, image_size, image_size, character_x, character_y)
-        grass.draw(grass_pibotx, grass_piboty)
-        update_canvas()
-        frame = (frame+1)% 8
+        draw_scene(character_x,character_y)
         character_x, character_y = movement_calculation(character_x, character_y, destination_x, destination_y)
-        delay(0.05)
-        get_events()
     now_index = (now_index + 1) % 10
     next_index = (now_index + 1) % 10
     character_x, character_y = point_dictionary[now_index]
 
-def draw_scene()
-    pass
+
+def draw_scene(character_X, character_Y):
+    global frame
+    clear_canvas()
+    character.clip_draw(frame * image_point, facing_direction[facing_point] * image_point, image_size, image_size, character_X, character_Y)
+    grass.draw(grass_pibotx, grass_piboty)
+    update_canvas()
+    frame = (frame + 1) % 8
+    delay(0.05)
+    get_events()
 
 
 def moving_direction(character_X, now_indexX, next_indexX):
@@ -75,16 +76,16 @@ def moving_direction(character_X, now_indexX, next_indexX):
             return True
         else:
             return False
-    pass
+
 
 def movement_calculation(x1, y1, x2, y2):
-    global facing_direction
     momentum_control = 10
     return x1 + (x2-x1) / momentum_control, y1 + ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
 
+
 def move_to_point():
     straight_move()
-    pass
+
 
 while True:
     move_to_point()
