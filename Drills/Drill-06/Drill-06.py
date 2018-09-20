@@ -15,6 +15,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
+def straight_move():
+    pass
 
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
@@ -31,6 +33,7 @@ while running:
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
     character.clip_draw(frame * 100, 100 * 1, 100, 100, xpos, ypos)
     hand_arrow.draw(xpos, ypos)
+    straight_move()
     update_canvas()
     frame = (frame + 1) % 8
 
