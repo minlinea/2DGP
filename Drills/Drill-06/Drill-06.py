@@ -13,17 +13,22 @@ def handle_events():
         elif event.type == SDL_MOUSEMOTION:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
         elif event.type == SDL_MOUSEBUTTONDOWN:
-            mouseclick_xpos, mouseclick_ypos = event.x,  window_to_pico_coordinate_system(event.y)
+            mouseclick_xpos, mouseclick_ypos = event.x -25,  window_to_pico_coordinate_system(event.y-25)
             click = True
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
 def straight_move():
     global character_xpos, character_ypos, mouseclick_ypos, mouseclick_xpos, click
-    if (moving_direction(character_xpos, mouseclick_xpos) and click == True):
-        character_xpos, character_ypos = movement_calculation(character_xpos, character_ypos, mouseclick_xpos, mouseclick_ypos)
-    character_x, character_y = mouseclick_xpos, mouseclick_ypos
-    click = False
+
+    if (click == False):
+        draw_scene(character_xpos, character_ypos)
+    else:
+        while (moving_direction(character_xpos, mouseclick_xpos) and click == True):
+            draw_scene(character_xpos, character_ypos)
+            character_xpos, character_ypos = movement_calculation(character_xpos, character_ypos, mouseclick_xpos, mouseclick_ypos)
+        character_x, character_y = mouseclick_xpos, mouseclick_ypos
+        click = False
 
 def window_to_pico_coordinate_system(num):
     return KPU_HEIGHT - 1 - num
@@ -32,19 +37,19 @@ def moving_direction(character_x, mouseclick_x):
     global facing_point
     if(character_x - mouseclick_x > 0):
         if (character_x + 1 > mouseclick_x):
-            if(character_x - mouseclick_x > 6):
-                facing_point  = run_right
+            if(character_x - mouseclick_x > 10):
+                facing_point  = run_left
             else :
-                facing_point = walk_right
+                facing_point = walk_left
             return True
         else:
             return False
     elif(character_x - mouseclick_x < 0):
         if (character_x + 1 < mouseclick_x):
-            if(character_x - mouseclick_x > 4):
-                facing_point  = run_left
+            if(mouseclick_x - character_x > 10):
+                facing_point  = run_right
             else :
-                facing_point = walk_left
+                facing_point = walk_right
             return True
         else:
             return False
@@ -52,8 +57,19 @@ def moving_direction(character_x, mouseclick_x):
         return False
 
 def movement_calculation(x1, y1, x2, y2):
-    momentum_control = 16
+    momentum_control = 15
     return x1 + (x2-x1) / momentum_control, y1 + ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
+
+def draw_scene(character_X, character_Y):
+    global frame, mouse_xpos, mouseclick_ypos, facing_point
+    clear_canvas()
+    kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
+    character.clip_draw(frame * 100, 100 * facing_direction[facing_point], 100, 100, character_xpos, character_ypos)
+    hand_arrow.draw(mouse_xpos, mouse_ypos)
+    update_canvas()
+    frame = (frame + 1) % 8
+    delay(0.05)
+    handle_events()
 
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
@@ -81,15 +97,6 @@ facing_direction = (run_left, run_right, walk_left, walk_right)
 facing_point = 0
 
 while running:
-    clear_canvas()
-    kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
-    character.clip_draw(frame * 100, 100 * facing_direction[facing_point], 100, 100, character_xpos, character_ypos)
-    hand_arrow.draw(mouse_xpos, mouse_ypos)
     straight_move()
-    update_canvas()
-    frame = (frame + 1) % 8
-
-    delay(0.05)
-    handle_events()
 
 close_canvas()
