@@ -14,9 +14,9 @@ def handle_events():
     global running
     events = get_events()
     for event in events:
-        if event.type == SDL_QUIT:
+        if event.type == SDL_QUIT:                  # 윈도우 우측 상단 X표를 이용한 종료
             running = False
-        if event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+        if event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:  #ESC를 이용한 종료
             running = False
     pass
 
