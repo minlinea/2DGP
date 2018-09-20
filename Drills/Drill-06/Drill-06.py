@@ -76,8 +76,6 @@ kpu_ground = load_image('KPU_GROUND.png')
 character = load_image('animation_sheet.png')
 hand_arrow = load_image('hand_arrow.png')
 
-
-
 running = True
 click = False
 
