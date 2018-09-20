@@ -18,6 +18,13 @@ def handle_events():
 def straight_move():
     pass
 
+def moving_Direction():
+    pass
+
+def movement_calculation(x1, y1, x2, y2):
+    momentum_control = 10
+    return x1 + (x2-x1) / momentum_control, y1 + ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
+
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
 character = load_image('animation_sheet.png')
