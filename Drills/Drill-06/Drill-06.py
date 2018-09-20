@@ -14,18 +14,42 @@ def handle_events():
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             mouseclick_xpos, mouseclick_ypos = event.x,  window_to_pico_coordinate_system(event.y)
-            character_xpos, character_ypos = mouseclick_xpos, mouseclick_ypos
+            click = True
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
 def straight_move():
-    pass
+    global character_xpos, character_ypos, mouseclick_ypos, mouseclick_xpos, click
+    while (moving_direction(character_xpos, mouseclick_xpos) and click == True):
+        character_xpos, character_ypos = movement_calculation(character_xpos, character_ypos, mouseclick_xpos, mouseclick_ypos)
+    character_x, character_y = mouseclick_xpos, mouseclick_ypos
+    click = False
 
 def window_to_pico_coordinate_system(num):
     return KPU_HEIGHT - 1 - num
 
-def moving_direction(character_X, now_indexX, next_indexX):
-    pass
+def moving_direction(character_x, mouseclick_x):
+    global facing_point
+    if(character_x - mouseclick_x > 0):
+        if (character_x + 1 < mouseclick_x):
+            if(character_x - mouseclick_x > 6):
+                facing_point  = run_right
+            else :
+                facing_point = walk_right
+            return True
+        else:
+            return False
+    elif(character_x - mouseclick_x < 0):
+        if (character_x > mouseclick_x + 1):
+            if(character_x - mouseclick_x > 4):
+                facing_point  = run_left
+            else :
+                facing_point = walk_left
+            return True
+        else:
+            return False
+    else:
+        return False
 
 def movement_calculation(x1, y1, x2, y2):
     momentum_control = 10
@@ -39,7 +63,7 @@ hand_arrow = load_image('hand_arrow.png')
 
 
 running = True
-click = True
+click = False
 
 mouse_xpos, mouse_ypos = KPU_WIDTH // 2, KPU_HEIGHT // 2
 character_xpos, character_ypos = KPU_WIDTH // 2, KPU_HEIGHT // 2
