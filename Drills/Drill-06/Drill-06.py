@@ -4,7 +4,7 @@ KPU_WIDTH, KPU_HEIGHT = 1280, 1024
 
 
 def handle_events():
-    global running
+    global running, click
     global mouse_xpos, mouse_ypos, character_xpos, character_ypos, mouseclick_ypos, mouseclick_xpos
     events = get_events()
     for event in events:
@@ -20,7 +20,7 @@ def handle_events():
 
 def straight_move():
     global character_xpos, character_ypos, mouseclick_ypos, mouseclick_xpos, click
-    while (moving_direction(character_xpos, mouseclick_xpos) and click == True):
+    if (moving_direction(character_xpos, mouseclick_xpos) and click == True):
         character_xpos, character_ypos = movement_calculation(character_xpos, character_ypos, mouseclick_xpos, mouseclick_ypos)
     character_x, character_y = mouseclick_xpos, mouseclick_ypos
     click = False
@@ -31,7 +31,7 @@ def window_to_pico_coordinate_system(num):
 def moving_direction(character_x, mouseclick_x):
     global facing_point
     if(character_x - mouseclick_x > 0):
-        if (character_x + 1 < mouseclick_x):
+        if (character_x + 1 > mouseclick_x):
             if(character_x - mouseclick_x > 6):
                 facing_point  = run_right
             else :
@@ -40,7 +40,7 @@ def moving_direction(character_x, mouseclick_x):
         else:
             return False
     elif(character_x - mouseclick_x < 0):
-        if (character_x > mouseclick_x + 1):
+        if (character_x + 1 < mouseclick_x):
             if(character_x - mouseclick_x > 4):
                 facing_point  = run_left
             else :
@@ -52,7 +52,7 @@ def moving_direction(character_x, mouseclick_x):
         return False
 
 def movement_calculation(x1, y1, x2, y2):
-    momentum_control = 10
+    momentum_control = 16
     return x1 + (x2-x1) / momentum_control, y1 + ((y2-y1) / (x2-x1)) * ((x2-x1) / momentum_control)
 
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
@@ -89,11 +89,7 @@ while running:
     update_canvas()
     frame = (frame + 1) % 8
 
-    delay(0.02)
+    delay(0.05)
     handle_events()
 
 close_canvas()
-
-
-
-
