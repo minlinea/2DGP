@@ -10,13 +10,16 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             running = False
+            click = False
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
+            click = False
         elif event.type == SDL_MOUSEMOTION:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
         elif event.type == SDL_MOUSEBUTTONDOWN:
             mouseclick_xpos, mouseclick_ypos = event.x -25,  window_to_pico_coordinate_system(event.y-25)
             click = True
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+
 
 def straight_move():
     global character_xpos, character_ypos, mouseclick_ypos, mouseclick_xpos, click
@@ -62,6 +65,7 @@ def movement_calculation(x1, y1, x2, y2):
 
 def draw_scene(character_X, character_Y):
     global frame, mouse_xpos, mouseclick_ypos, facing_point
+    handle_events()
     clear_canvas()
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
     character.clip_draw(frame * 100, 100 * facing_direction[facing_point], 100, 100, character_xpos, character_ypos)
@@ -69,7 +73,7 @@ def draw_scene(character_X, character_Y):
     update_canvas()
     frame = (frame + 1) % 8
     delay(0.05)
-    handle_events()
+
 
 open_canvas(KPU_WIDTH, KPU_HEIGHT)
 kpu_ground = load_image('KPU_GROUND.png')
