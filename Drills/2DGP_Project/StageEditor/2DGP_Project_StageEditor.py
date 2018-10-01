@@ -10,15 +10,14 @@ def handle_events():
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
-    #for event in events:
         #if event.type == SDL_MOUSEBUTTONDOWN:
             # 마우스 위치 값, 현재 선택한 타일 정보 필요
 
 def draw_scene():
     clear_canvas()
     whiteboard.clip_draw(0,0,800-1,600-1,(800-1)/2, (600-1)/2)
-    imposible_collocate.clip_draw(0, 0, 150 - 1, 400 - 1, (150 - 1) / 2, (400-1)/2)
-    imposible_collocate.clip_draw(0, 0, 150 - 1, 400 - 1, 800 - ((150 - 1) / 2), ((400 - 1) / 2))
+    imposible_collocate.clip_draw(0, 0, 100, 400, (100/ 2), (400/2))
+    imposible_collocate.clip_draw(0, 0, 100, 400, 800 - (100 / 2), (400 / 2))
     update_canvas()
     handle_events()
 
