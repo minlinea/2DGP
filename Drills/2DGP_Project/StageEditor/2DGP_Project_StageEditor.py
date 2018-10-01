@@ -2,21 +2,6 @@ from pico2d import *
 
 open_canvas()
 
-def collocate_tile():
-    pass
-
-def set_collocate_tile():
-    pass
-
-def clear_stage():
-    pass
-
-def save_stage():
-    pass
-
-def load_stage():
-    pass
-
 def handle_events():
     global running
     events = get_events()
@@ -25,6 +10,7 @@ def handle_events():
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
+    #for event in events:
         #if event.type == SDL_MOUSEBUTTONDOWN:
             # 마우스 위치 값, 현재 선택한 타일 정보 필요
 
@@ -36,23 +22,13 @@ def draw_scene():
     update_canvas()
     handle_events()
 
-
-
-
-#-------------------------------------------------------선언부분-------------------------------------------------------#
-
 running = True
 whiteboard = load_image('whiteboard.png')
 imposible_collocate = load_image('imposible_collocate.png')
 
-#-------------------------------------------------------선언부분-------------------------------------------------------#
-
-
-#-------------------------------------------------------메인부분-------------------------------------------------------#
 
 while running:
     draw_scene()
 
 close_canvas()
-#-------------------------------------------------------메인부분-------------------------------------------------------#
 
