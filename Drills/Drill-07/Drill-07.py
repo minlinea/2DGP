@@ -72,7 +72,6 @@ def moving_direction(character_X, now_indexX, next_indexX):
         facing_point = run_left
 
 
-
 def movement_calculation(x1, y1, x2, y2):
     global momentum_control, cycle, t
     cycle = ((cycle+1) % momentum_control)
