@@ -24,7 +24,7 @@ image_point = 100
 
 frame = 0
 point = 1
-momentum_control = 100
+momentum_control = 10
 i = 1
 
 character_x, character_y = point_dictionary[0][0], point_dictionary[0][1]
@@ -43,7 +43,7 @@ def straight_move():
     global point, character_x, character_y
     while (moving_direction(character_x, point_dictionary[point-1][0], point_dictionary[point][0])):
         draw_scene(character_x, character_y)
-        character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][0],
+        character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][1],
                                                         point_dictionary[point][0], point_dictionary[point][1])
 
     character_x, character_y = point_dictionary[point]
