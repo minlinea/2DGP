@@ -23,6 +23,7 @@ frame = 0
 point = 1
 momentum_control = 20
 cycle = 1
+t = cycle / momentum_control
 
 running = True
 
@@ -44,22 +45,22 @@ def straight_move():
     moving_direction(character_x, point_dictionary[point-1][0], point_dictionary[point][0])
     character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][1],
                                                         point_dictionary[point][0], point_dictionary[point][1])
-    character_x, character_y = point_dictionary[point]
-    point = (point) % momentum_control + 1
+    if(cycle == 1 and t == 0):
+        character_x, character_y = point_dictionary[point]
+        point = (point+1) % size
 
 def Reach_destination():
     pass
 
 def draw_scene():
     global frame
-    handle_events()
     clear_canvas()
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
     character.clip_draw(frame * image_point, facing_direction[facing_point] * image_point, image_size, image_size, character_x, character_y)
     update_canvas()
     frame = (frame + 1) % 8
     delay(0.05)
-    get_events()
+    handle_events()
 
 
 
@@ -73,9 +74,9 @@ def moving_direction(character_X, now_indexX, next_indexX):
 
 
 def movement_calculation(x1, y1, x2, y2):
-    global momentum_control, cycle
+    global momentum_control, cycle, t
     cycle = ((cycle+1) % momentum_control)
-    t= cycle / momentum_control
+    t = cycle / momentum_control
     x = (1 - t) * x1 + t * x2
     y = (1 - t) * y1 + t * y2
     if(cycle == momentum_control-1):
