@@ -24,7 +24,7 @@ image_point = 100
 
 frame = 0
 point = 1
-momentum_control = 10
+momentum_control = 100
 i = 1
 
 character_x, character_y = point_dictionary[0][0], point_dictionary[0][1]
@@ -46,9 +46,8 @@ def straight_move():
         character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][0],
                                                         point_dictionary[point][0], point_dictionary[point][1])
 
-
-    point = (point + 1) % momentum_control
     character_x, character_y = point_dictionary[point]
+    point = (point + 1) % momentum_control
 
 
 def draw_scene(character_X, character_Y):
@@ -85,6 +84,12 @@ def movement_calculation(x1, y1, x2, y2):
     t = i / momentum_control
     x = (1 - t) * x1 + t * x2
     y = (1 - t) * y1 + t * y2
+    if(i == momentum_control-1):
+        t = 1
+        x = (1 - t) * x1 + t * x2
+        y = (1 - t) * y1 + t * y2
+        i = 0
+        t = 0
     return (x, y)
 
 
