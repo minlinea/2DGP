@@ -16,17 +16,27 @@ run_left = 0
 run_right = 1
 walk_left = 2
 walk_right = 3
-facing_direction = (run_left, run_right, walk_left, walk_right)
+facing_direction = [run_left, run_right, walk_left, walk_right]
 facing_point = 0
 
 image_size = 100
 image_point = 100
 grass_pibotx, grass_piboty = 400, 30
 
-now_index = 1
 frame = 0
 point = 1
 momentum_control = 10
+
+running = True
+
+def handle_events():
+    global running
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            running = False
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            running = False
 
 def straight_move():
     global point
@@ -37,7 +47,7 @@ def straight_move():
         draw_scene(character_x,character_y)
         character_x, character_y = movement_calculation(character_x, character_y, destination_x, destination_y)
     point = (point + 1) % momentum_control
-    character_x, character_y = point_dictionary[now_index]
+    character_x, character_y = point_dictionary[point]
 
 
 def draw_scene(character_X, character_Y):
@@ -86,7 +96,7 @@ def move_to_point():
     straight_move()
 
 
-while True:
+while running:
     move_to_point()
 
 
