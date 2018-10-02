@@ -19,6 +19,7 @@ def draw_scene():
     imposible_collocate.clip_draw(0, 0, 100, 400, (100/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 100, 400, 800 - (100 / 2), (400 / 2))
     tile_kind.clip_draw(0,0,100,250, (100/2), (250/2))
+    ex_tile_direction.clip_draw(0,0,100,100, 800 - (100/2), (400/2))
     update_canvas()
     handle_events()
 
@@ -26,6 +27,7 @@ running = True
 whiteboard = load_image('whiteboard.png')
 imposible_collocate = load_image('imposible_collocate.png')
 tile_kind = load_image('tile_kind.png')
+ex_tile_direction = load_image('ex_tile_direction.png')
 
 
 while running:
