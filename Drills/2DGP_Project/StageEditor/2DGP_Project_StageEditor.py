@@ -11,6 +11,7 @@ click = False
 whiteboard = load_image('whiteboard.png')
 imposible_collocate = load_image('imposible_collocate.png')
 tile_kind = load_image('tile_kind.png')
+tile_choose = load_image('tile_choose.png')
 ex_tile_direction = load_image('ex_tile_direction.png')
 
 def collocate_tile():
@@ -72,10 +73,11 @@ def window_to_pico_coordinate_system(num):
 
 def draw_scene():
     clear_canvas()
-    whiteboard.clip_draw(0,0,WINDOW_WIDTH,WINDOW_HEIGHT,(WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
+    whiteboard.draw((WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
     imposible_collocate.clip_draw(0, 0, 100, 400, (100/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 100, 400, WINDOW_WIDTH - (100 / 2), (400 / 2))
-    tile_kind.clip_draw(0,0,100,250, (100/2), (250/2))
+    tile_kind.draw((100/2), (250/2))
+    tile_choose.clip_draw(0,0, 45+1, 68+1, 100/2, 300/2)            # 투명화가 필요한데..
     ex_tile_direction.clip_draw(0,0,100,100, WINDOW_WIDTH - (100/2), (400/2))
     update_canvas()
     handle_events()
