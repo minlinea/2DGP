@@ -11,6 +11,21 @@ imposible_collocate = load_image('imposible_collocate.png')
 tile_kind = load_image('tile_kind.png')
 ex_tile_direction = load_image('ex_tile_direction.png')
 
+def collocate_tile():
+    pass
+
+def set_collocate_tile():
+    pass
+
+def clear_stage():
+    pass
+
+def save_stage():
+    pass
+
+def load_stage():
+    pass
+
 def handle_events():
     global running, click
     events = get_events()
