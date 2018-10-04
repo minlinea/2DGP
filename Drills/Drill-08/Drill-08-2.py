@@ -41,7 +41,7 @@ def handle_events():
             running = False
 
 def straight_move():
-    global point, character_x, character_y, running
+    global point, character_x, character_y
     moving_direction(character_x, point_dictionary[point-1][0], point_dictionary[point][0])
     character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][1],
                                                         point_dictionary[point][0], point_dictionary[point][1])
@@ -49,7 +49,11 @@ def straight_move():
         character_x, character_y = point_dictionary[point]
         point = (point+1) % size
 
-def cardinal_spline_move(p1, p2, p3, p4):
+def curve_move():
+    global point, character_x, character_y
+    pass
+
+def cardinal_spline(p1, p2, p3, p4):
 
     # draw p1-p2
     for i in range(0, 50, 2):
@@ -117,7 +121,8 @@ def movement_calculation(x1, y1, x2, y2):
 
 
 def move_to_point():
-    straight_move()
+    #straight_move()
+    curve_move()
 
 
 while running:
