@@ -100,13 +100,13 @@ def draw_curve_4_points(p1, p2, p3, p4):
 
 
 point1 = ((-350, -100), (-50, 150), (150, -100), (200, 200))
-point2 = ((-350, -100), (-50, 200), (150,-100), (-350,-300))
+point2 = ((-350, 200), (400, 350), (300,-300), (-200,-200))
 num = 0
 prepare_turtle_canvas()
 
 while(1):
-    #draw_curve_3_points(point1[(num) % 4], point1[(num+1) % 4], point1[(num+2) % 4])
+    #draw_curve_3_points(point2[(num) % 4], point2[(num+1) % 4], point2[(num+2) % 4])
     draw_curve_4_points(point2[(num) % 4], point2[(num + 1) % 4], point2[(num + 2) % 4], point2[(num + 3) %4])
-    num = (num+1) % 4
+    num = (num+2) % 4
 
 turtle.done()
