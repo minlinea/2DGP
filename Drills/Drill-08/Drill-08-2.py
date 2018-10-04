@@ -60,7 +60,8 @@ def curve_move():
     pass
 
 def cardinal_spline(p1, p2, p3, p4):
-    global delay_time, move_count
+    global delay_time, move_count, point
+
     # draw p1-p2
     if(move_count == 0):
         t = ((delay_time + 2) % 100) / 100
@@ -72,11 +73,18 @@ def cardinal_spline(p1, p2, p3, p4):
             x = p2[0]
             y = p2[1]
         return x,y
+
     # draw p2-p3
-    for i in range(0, 100, 2):
-        t = i / 100
+    if(move_count == 1):
+        t = ((delay_time + 2) % 100) / 100
         x = ((-t**3 + 2*t**2 - t)*p1[0] + (3*t**3 - 5*t**2 + 2)*p2[0] + (-3*t**3 + 4*t**2 + t)*p3[0] + (t**3 - t**2)*p4[0])/2
         y = ((-t**3 + 2*t**2 - t)*p1[1] + (3*t**3 - 5*t**2 + 2)*p2[1] + (-3*t**3 + 4*t**2 + t)*p3[1] + (t**3 - t**2)*p4[1])/2
+        if (delay_time == 100):
+            delay_time = 0
+            move_count = 2
+            x = p3[0]
+            y = p3[1]
+        return x,y
 
     # draw p3-p4
     for i in range(0, 100, 2):
