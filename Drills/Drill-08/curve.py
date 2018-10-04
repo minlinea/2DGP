@@ -57,14 +57,15 @@ def draw_curve_3_points(p1, p2, p3):
     draw_big_point(p1)
     draw_big_point(p2)
     draw_big_point(p3)
+    cardinal_spline_p3(p1,p2,p3)
 
+def cardinal_spline_p3(p1,p2,p3):
     for i in range(0, 100, 2):
-        t = i/100
+        t = i / 100
         x = (2 * t ** 2 - 3 * t + 1) * p1[0] + (-4 * t ** 2 + 4 * t) * p2[0] + (2 * t ** 2 - t) * p3[0]
         y = (2 * t ** 2 - 3 * t + 1) * p1[1] + (-4 * t ** 2 + 4 * t) * p2[1] + (2 * t ** 2 - t) * p3[1]
-        draw_point((x,y))
+        draw_point((x, y))
     draw_point(p3)
-
 
 def draw_curve_4_points(p1, p2, p3, p4):
     draw_big_point(p1)
@@ -98,12 +99,14 @@ def draw_curve_4_points(p1, p2, p3, p4):
 
 
 
-point = ((-350, -100), (-50, 150), (150, -100))
-
+point1 = ((-350, -100), (-50, 150), (150, -100), (200, 200))
+point2 = ((-350, -100), (-50, 200), (150,-100), (-350,-300))
+num = 0
 prepare_turtle_canvas()
 
-draw_curve_3_points(point[0], point[1], point[2])
-
-
+while(1):
+    #draw_curve_3_points(point1[(num) % 4], point1[(num+1) % 4], point1[(num+2) % 4])
+    draw_curve_4_points(point2[(num) % 4], point2[(num + 1) % 4], point2[(num + 2) % 4], point2[(num + 3) %4])
+    num = (num+1) % 4
 
 turtle.done()
