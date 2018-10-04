@@ -1,99 +1,114 @@
+import turtle
 import random
-from pico2d import *
 
-KPU_WIDTH, KPU_HEIGHT = 1280, 1024
 
-open_canvas()
+def stop():
+    turtle.bye()
 
-kpu_ground = load_image('KPU_GROUND.png')
-character = load_image('animation_sheet.png')
 
-size = 20
-run_left = 0
-run_right = 1
-walk_left = 2
-walk_right = 3
-facing_direction = [run_left, run_right, walk_left, walk_right]
-facing_point = 0
+def prepare_turtle_canvas():
+    turtle.setup(1024, 768)
+    turtle.bgcolor(0.2, 0.2, 0.2)
+    turtle.penup()
+    turtle.hideturtle()
+    turtle.shape('arrow')
+    turtle.shapesize(2)
+    turtle.pensize(5)
+    turtle.color(1, 0, 0)
+    turtle.speed(100)
+    turtle.goto(-500, 0)
+    turtle.pendown()
+    turtle.goto(480, 0)
+    turtle.stamp()
+    turtle.penup()
+    turtle.goto(0, -360)
+    turtle.pendown()
+    turtle.goto(0, 360)
+    turtle.setheading(90)
+    turtle.stamp()
+    turtle.penup()
+    turtle.home()
 
-image_size = 100
-image_point = 100
+    turtle.shape('circle')
+    turtle.pensize(1)
+    turtle.color(0, 0, 0)
+    turtle.speed(50)
 
-frame = 0
-point = 1
-momentum_control = 20
-cycle = 1
-t = cycle / momentum_control
-
-running = True
-
-point_dictionary = [(random.randint(0 + image_size, 800 - image_size), random.randint(0 + image_size, 600 - image_size)) for i in range(size)]
-
-character_x, character_y = point_dictionary[0]
-
-def handle_events():
-    global running
-    events = get_events()
-    for event in events:
-        if event.type == SDL_QUIT:
-            running = False
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
-
-def straight_move():
-    global point, character_x, character_y, running
-    moving_direction(character_x, point_dictionary[point-1][0], point_dictionary[point][0])
-    character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][1],
-                                                        point_dictionary[point][0], point_dictionary[point][1])
-    if(cycle == 1 and t == 0):
-        character_x, character_y = point_dictionary[point]
-        point = (point+1) % size
-
-def Reach_destination():
-    pass
-
-def draw_scene():
-    global frame
-    clear_canvas()
-    kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
-    character.clip_draw(frame * image_point, facing_direction[facing_point] * image_point, image_size, image_size, character_x, character_y)
-    update_canvas()
-    frame = (frame + 1) % 8
-    delay(0.05)
-    handle_events()
+    turtle.onkey(stop, 'Escape')
+    turtle.listen()
 
 
 
-def moving_direction(character_X, now_indexX, next_indexX):
-    global facing_point
-    if(next_indexX - now_indexX > 0):
-        facing_point = run_right
-    else:
-        facing_point = run_left
+def draw_big_point(p):
+    turtle.goto(p)
+    turtle.color(0.8, 0.9, 0)
+    turtle.dot(15)
+    turtle.write('     '+str(p))
 
 
-def movement_calculation(x1, y1, x2, y2):
-    global momentum_control, cycle, t
-    cycle = ((cycle+1) % momentum_control)
-    t = cycle / momentum_control
-    x = (1 - t) * x1 + t * x2
-    y = (1 - t) * y1 + t * y2
-    if(cycle == momentum_control-1):
-        t = 1
-        x = (1 - t) * x1 + t * x2
-        y = (1 - t) * y1 + t * y2
-        cycle = 1
-        t = 0
-    return (x, y)
+def draw_point(p):
+    turtle.goto(p)
+    turtle.dot(5, random.random(), random.random(), random.random())
 
 
-def move_to_point():
-    straight_move()
 
 
-while running:
-    move_to_point()
-    draw_scene()
+def draw_curve_3_points(p1, p2, p3):
+    draw_big_point(p1)
+    draw_big_point(p2)
+    draw_big_point(p3)
+    cardinal_spline_p3(p1,p2,p3)
+
+def cardinal_spline_p3(p1,p2,p3):
+    for i in range(0, 100, 2):
+        t = i / 100
+        x = (2 * t ** 2 - 3 * t + 1) * p1[0] + (-4 * t ** 2 + 4 * t) * p2[0] + (2 * t ** 2 - t) * p3[0]
+        y = (2 * t ** 2 - 3 * t + 1) * p1[1] + (-4 * t ** 2 + 4 * t) * p2[1] + (2 * t ** 2 - t) * p3[1]
+        draw_point((x, y))
+    draw_point(p3)
+
+def draw_curve_4_points(p1, p2, p3, p4):
+    draw_big_point(p1)
+    draw_big_point(p2)
+    draw_big_point(p3)
+    draw_big_point(p4)
+
+    # draw p1-p2
+    for i in range(0, 50, 2):
+        t = i / 100
+        x = (2*t**2-3*t+1)*p1[0]+(-4*t**2+4*t)*p2[0]+(2*t**2-t)*p3[0]
+        y = (2*t**2-3*t+1)*p1[1]+(-4*t**2+4*t)*p2[1]+(2*t**2-t)*p3[1]
+        draw_point((x, y))
+    draw_point(p2)
+
+    # draw p2-p3
+    for i in range(0, 100, 2):
+        t = i / 100
+        x = ((-t**3 + 2*t**2 - t)*p1[0] + (3*t**3 - 5*t**2 + 2)*p2[0] + (-3*t**3 + 4*t**2 + t)*p3[0] + (t**3 - t**2)*p4[0])/2
+        y = ((-t**3 + 2*t**2 - t)*p1[1] + (3*t**3 - 5*t**2 + 2)*p2[1] + (-3*t**3 + 4*t**2 + t)*p3[1] + (t**3 - t**2)*p4[1])/2
+        draw_point((x, y))
+    draw_point(p3)
+
+    # draw p3-p4
+    for i in range(0, 100, 2):
+        t = i / 100
+        x = ((-t**3 + 2*t**2 - t)*p2[0] + (3*t**3 - 5*t**2 + 2)*p3[0] + (-3*t**3 + 4*t**2 + t)*p4[0] + (t**3 - t**2)*p1[0])/2
+        y = ((-t**3 + 2*t**2 - t)*p2[1] + (3*t**3 - 5*t**2 + 2)*p3[1] + (-3*t**3 + 4*t**2 + t)*p4[1] + (t**3 - t**2)*p1[1])/2
+        draw_point((x, y))
+    draw_point(p3)
+
+    # draw p4-p1
+    
 
 
-close_canvas()
+
+point1 = ((-350, -100), (-50, 150), (150, -100), (200, 200))
+point2 = ((-350, 200), (400, 350), (300,-300), (-200,-200))
+num = 0
+prepare_turtle_canvas()
+
+while(1):
+    #draw_curve_3_points(point2[(num) % 4], point2[(num+1) % 4], point2[(num+2) % 4])
+    draw_curve_4_points(point2[(num) % 4], point2[(num + 1) % 4], point2[(num + 2) % 4], point2[(num + 3) %4])
+
+turtle.done()
