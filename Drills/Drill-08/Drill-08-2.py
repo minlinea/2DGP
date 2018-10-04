@@ -109,10 +109,6 @@ def cardinal_spline(p1, p2, p3, p4):
             pass_point = (pass_point + 1) % size
         return x,y
 
-
-def Reach_destination():
-    pass
-
 def draw_scene():
     global frame
     clear_canvas()
