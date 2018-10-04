@@ -114,12 +114,14 @@ def draw_scene():
     clear_canvas()
     kpu_ground.draw(KPU_WIDTH // 2, KPU_HEIGHT // 2)
     character.clip_draw(frame * image_point, facing_direction[facing_point] * image_point, image_size, image_size, character_x, character_y)
+    character_stamp()
     update_canvas()
     frame = (frame + 1) % 8
     delay(0.05)
     handle_events()
 
-
+def character_stamp():
+    pass
 
 def moving_direction(character_X, next_indexX):
     global facing_point
