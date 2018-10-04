@@ -8,7 +8,7 @@ open_canvas()
 kpu_ground = load_image('KPU_GROUND.png')
 character = load_image('animation_sheet.png')
 
-size = 20
+size = 10
 run_left = 0
 run_right = 1
 walk_left = 2
@@ -24,6 +24,8 @@ point = 1
 momentum_control = 20
 cycle = 1
 t = cycle / momentum_control
+delay_time = 2
+move_count = 0
 
 running = True
 
@@ -50,18 +52,26 @@ def straight_move():
         point = (point+1) % size
 
 def curve_move():
-    global point, character_x, character_y
+    global point, character_x, character_y, delay_time
+    moving_direction(character_x, point_dictionary[point - 1][0], point_dictionary[point][0])
+    character_x, character_y = cardinal_spline(point_dictionary[(point - 1) % size], point_dictionary[point % size],
+                                                    point_dictionary[(point + 1) % size], point_dictionary[(point + 2) % size])
+    delay_time += 2
     pass
 
 def cardinal_spline(p1, p2, p3, p4):
-
+    global delay_time, move_count
     # draw p1-p2
-    for i in range(0, 50, 2):
-        t = i / 100
+    if(move_count == 0):
+        t = ((delay_time + 2) % 100) / 100
         x = (2*t**2-3*t+1)*p1[0]+(-4*t**2+4*t)*p2[0]+(2*t**2-t)*p3[0]
         y = (2*t**2-3*t+1)*p1[1]+(-4*t**2+4*t)*p2[1]+(2*t**2-t)*p3[1]
-
-
+        if (delay_time == 50):
+            delay_time = 0
+            move_count = 1
+            x = p2[0]
+            y = p2[1]
+        return x,y
     # draw p2-p3
     for i in range(0, 100, 2):
         t = i / 100
