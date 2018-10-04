@@ -26,6 +26,8 @@ cycle = 1
 t = cycle / momentum_control
 delay_time = 2
 move_count = 0
+pass_point = 0
+
 
 running = True
 
@@ -43,7 +45,7 @@ def handle_events():
             running = False
 
 def straight_move():
-    global point, character_x, character_y
+    global point, character_x, character_y, pass_point
     moving_direction(character_x, point_dictionary[point-1][0], point_dictionary[point][0])
     character_x, character_y = movement_calculation(point_dictionary[point - 1][0], point_dictionary[point - 1][1],
                                                         point_dictionary[point][0], point_dictionary[point][1])
@@ -61,10 +63,9 @@ def curve_move():
         move_count = 1
         point = (point+2) % size
 
-    pass
 
 def cardinal_spline(p1, p2, p3, p4):
-    global delay_time, move_count, point
+    global delay_time, move_count, point, pass_point
 
     # draw p1-p2
     if(move_count == 0):
@@ -76,6 +77,7 @@ def cardinal_spline(p1, p2, p3, p4):
             move_count = 1
             x = p2[0]
             y = p2[1]
+            pass_point = (pass_point + 1) % size
         return x,y
 
     # draw p2-p3
@@ -88,6 +90,7 @@ def cardinal_spline(p1, p2, p3, p4):
             move_count = 2
             x = p3[0]
             y = p3[1]
+            pass_point = (pass_point + 1) % size
         return x,y
 
     # draw p3-p4
@@ -103,6 +106,7 @@ def cardinal_spline(p1, p2, p3, p4):
             move_count = 3
             x = p4[0]
             y = p4[1]
+            pass_point = (pass_point + 1) % size
         return x,y
 
 
@@ -121,7 +125,8 @@ def draw_scene():
     handle_events()
 
 def character_stamp():
-    pass
+    for i in range (0, pass_point+1,1):
+        character.clip_draw(0, 0, image_size, image_size, point_dictionary[i][0], point_dictionary[i][1])
 
 def moving_direction(character_X, next_indexX):
     global facing_point
