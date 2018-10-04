@@ -53,7 +53,7 @@ def straight_move():
 
 def curve_move():
     global point, character_x, character_y, delay_time, move_count
-    moving_direction(character_x, point_dictionary[point - 1][0], point_dictionary[point][0])
+    moving_direction(character_x, point_dictionary[(point+move_count) % size][0])
     character_x, character_y = cardinal_spline(point_dictionary[(point - 1) % size], point_dictionary[point % size],
                                                     point_dictionary[(point + 1) % size], point_dictionary[(point + 2) % size])
     delay_time += 2
@@ -121,9 +121,9 @@ def draw_scene():
 
 
 
-def moving_direction(character_X, now_indexX, next_indexX):
+def moving_direction(character_X, next_indexX):
     global facing_point
-    if(next_indexX - now_indexX > 0):
+    if(next_indexX - character_X >= 0):
         facing_point = run_right
     else:
         facing_point = run_left
