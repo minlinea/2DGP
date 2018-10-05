@@ -6,7 +6,7 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 tile_size = 40
 mouse_xpos, mouse_ypos = 0,0
 
-tile_information_kind = [([(1) for i in range(20)]) for j in range(15)]
+tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
 
 running = True
 click = False
@@ -77,26 +77,32 @@ def handle_events():
             elif event.key == SDLK_3:
                 set_collocate_tile(2)
                 tile_choose_num = 2
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_4:
                 set_collocate_tile(3)
                 tile_choose_num = 3
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_5:
                 set_collocate_tile(4)
                 tile_choose_num = 4
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_6:
                 set_collocate_tile(5)
                 tile_choose_num = 5
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_7:
                 set_collocate_tile(6)
                 tile_choose_num = 6
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_8:
                 set_collocate_tile(7)
                 tile_choose_num = 7
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_9:
                 save_stage()
@@ -125,7 +131,7 @@ def draw_scene():
 
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            tile_kind.clip_draw(4 + 55* (tile_information_kind[j][i]),3 + 60 * (tile_information_kind[j][i]),
+            tile_kind.clip_draw(4 + (55 * ((tile_information_kind[j][i]) % 2)),3 + ((60*4)-(60 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
     #타일그리기
     imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
