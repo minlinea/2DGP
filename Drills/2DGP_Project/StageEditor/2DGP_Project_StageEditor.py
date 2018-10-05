@@ -6,8 +6,13 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
 mouse_xpos, mouse_ypos = 0,0
 
-tile_information_kind = (((0 for i in range(20)))for j in range(15))
-tile_information_place = ((((20+ i*40, 20+ j*40) for i in range(20)))for j in range(15))
+#tile_information_kind = (0 for i in range(15))
+#for i in (0, 20 + 1, 1):
+#    tile_information_kind[i] = (0 for i in range(20))
+#tile_information_place = ((0, 20 + i*40) for i in range(15))
+#for i in (0, 20 + 1, 1):
+#    tile_information_place = ((20+i, tile_information_place[i][1]) for i in range(20))
+
 
 running = True
 click = False
@@ -116,6 +121,10 @@ def draw_scene():
     clear_canvas()
     whiteboard.draw((WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
 
+    #for j in (0, 15 + 1, 1):
+    #    for i in (0, 20 + 1, 1):
+    #        tile_kind.clip_draw(5, 4, 52, 58, tile_information_place[j][i],
+    #                      tile_information_place[j][i])
     #타일그리기
     imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
