@@ -25,14 +25,14 @@ def collocate_tile(tile, mouse_x, mouse_y):
     j = (mouse_y) // 40
     tile_information_kind[j][i] = tile
 
-def set_collocate_tile(num):
-    pass
-
 def clear_stage():
     global tile_information_kind
     set_tile_inforamtion_kind(tile_information_kind, 0)
 
 def save_stage():
+    file = open("save_stage.txt",'w')
+
+    file.close()
     pass
 
 def load_stage():
