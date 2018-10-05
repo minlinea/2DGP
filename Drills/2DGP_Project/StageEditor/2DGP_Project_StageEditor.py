@@ -16,7 +16,7 @@ tile_kind = load_image('tile_kind.png')
 tile_choose = load_image('tile_choose.png')
 ex_tile_direction = load_image('ex_tile_direction.png')
 
-tile_choose_place = [(27,34),(73,34), (27,95), (73,95), (27,156),(73,156),(27,217),(73,217)]
+tile_choose_place = [(33,34),(87,34), (33,95), (87,95), (33,156),(87,156),(33,217),(87,217)]
 tile_choose_num = 0
 
 def collocate_tile():
@@ -34,14 +34,19 @@ def save_stage():
 def load_stage():
     pass
 
+
+
+
 def handle_events():
     global running, click, mouse_xpos, mouse_ypos, tile_choose_num
     events = get_events()
     for event in events:
-        if event.type == SDL_QUIT:                  # 마우스쪽
+        if event.type == SDL_QUIT:
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
+
+#------------------------------------------- 마우스 처리----------------------------------------------------#
         elif event.type == SDL_MOUSEBUTTONDOWN:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
             click = True # 선택한 상태에서 마우스모션과 연계
@@ -55,7 +60,10 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONUP:
             click = False # 마우스 버튼 뗀 순간 마우스모션과 연계 안되게끔
             pass
-        elif event.type == SDL_KEYDOWN:         #키 입력 부분
+# ------------------------------------------- 마우스 처리----------------------------------------------------#
+
+# --------------------------------------- 키보드 입력 처리----------------------------------------------------#
+        elif event.type == SDL_KEYDOWN:         #
             if event.key == SDLK_1:
                 tile_choose_num = 0
                 set_collocate_tile(0)
@@ -90,13 +98,14 @@ def handle_events():
                 pass
             elif event.key == SDLK_9:
                 save_stage()
-                pass        # 그렸던 것 저장
+                pass  # 그렸던 것 저장
             elif event.key == SDLK_0:
                 load_stage()
-                pass        # 그렸던 것 로드
+                pass  # 그렸던 것 로드
             elif event.key == SDLK_r:
                 clear_stage()
-                pass        #맵 초기화
+                pass  # 맵 초기화
+# --------------------------------------- 키보드 입력 처리----------------------------------------------------#
 
 def window_to_pico_coordinate_system(num):
     return WINDOW_HEIGHT - 1 - num
@@ -105,10 +114,10 @@ def window_to_pico_coordinate_system(num):
 def draw_scene():
     clear_canvas()
     whiteboard.draw((WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
-    imposible_collocate.clip_draw(0, 0, 100, 400, (100/ 2), (400/2))
-    imposible_collocate.clip_draw(0, 0, 100, 400, WINDOW_WIDTH - (100 / 2), (400 / 2))
-    tile_kind.draw((100/2), (250/2))
-    tile_choose.clip_draw(0,0, 45+1, 59+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])            # 투명화가 필요한데..
+    imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
+    imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
+    tile_kind.draw((120/2), (250/2))
+    tile_choose.clip_draw(0,0, 53+1, 61+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])            # 투명화가 필요한데..
     ex_tile_direction.clip_draw(0,0,100,100, WINDOW_WIDTH - (100/2), (400/2))
     update_canvas()
     handle_events()
