@@ -6,12 +6,8 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
 mouse_xpos, mouse_ypos = 0,0
 
-#tile_information_kind = (0 for i in range(15))
-#for i in (0, 20 + 1, 1):
-#    tile_information_kind[i] = (0 for i in range(20))
-#tile_information_place = ((0, 20 + i*40) for i in range(15))
-#for i in (0, 20 + 1, 1):
-#    tile_information_place = ((20+i, tile_information_place[i][1]) for i in range(20))
+tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
+
 
 
 running = True
