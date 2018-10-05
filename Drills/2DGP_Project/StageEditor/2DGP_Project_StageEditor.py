@@ -6,7 +6,8 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
 mouse_xpos, mouse_ypos = 0,0
 
-tile_kind_center = 49
+tile_information_kind = (((0 for i in range(20)))for j in range(15))
+tile_information_place = ((((20+ i*40, 20+ j*40) for i in range(20)))for j in range(15))
 
 running = True
 click = False
@@ -114,14 +115,16 @@ def window_to_pico_coordinate_system(num):
 def draw_scene():
     clear_canvas()
     whiteboard.draw((WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
+
+    #타일그리기
     imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
     tile_kind.draw((120/2), (250/2))
     tile_choose.clip_draw(0,0, 53+1, 61+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])            # 투명화가 필요한데..
     ex_tile_direction.clip_draw(0,0,100,100, WINDOW_WIDTH - (100/2), (400/2))
+
     update_canvas()
     handle_events()
-
 
 
 
