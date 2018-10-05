@@ -26,7 +26,8 @@ def set_collocate_tile(num):
     pass
 
 def clear_stage():
-    pass
+    global tile_information_kind
+    set_tile_inforamtion_kind(tile_information_kind, 0)
 
 def save_stage():
     pass
