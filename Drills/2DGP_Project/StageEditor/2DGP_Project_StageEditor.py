@@ -54,12 +54,12 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
             click = True # 선택한 상태에서 마우스모션과 연계
-            collocate_tile(tile_choose_num, mouse_xpos, mouse_ypos)    #elif 어떤 범위 안이면
+            collocate_tile(tile_choose_num, mouse_xpos, mouse_ypos)
             # 마우스 위치 값, 현재 선택한 타일 정보 필요
             pass
         elif event.type == SDL_MOUSEMOTION and click == True:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
-            #collocate_tile()  # elif 어떤 범위 안이면
+            collocate_tile(tile_choose_num, mouse_xpos, mouse_ypos)
             # 마우스를 누른채로 움직이면 한번에 타일이 쫘르륵 그려지게끔 만들자.
             pass
         elif event.type == SDL_MOUSEBUTTONUP:
@@ -77,27 +77,21 @@ def handle_events():
                 pass
             elif event.key == SDLK_3:
                 tile_choose_num = 2
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_4:
                 tile_choose_num = 3
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_5:
                 tile_choose_num = 4
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_6:
                 tile_choose_num = 5
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_7:
                 tile_choose_num = 6
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_8:
                 tile_choose_num = 7
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_9:
                 save_stage()
