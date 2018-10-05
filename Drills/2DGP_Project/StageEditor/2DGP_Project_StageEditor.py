@@ -16,7 +16,7 @@ tile_kind = load_image('tile_kind.png')
 tile_choose = load_image('tile_choose.png')
 ex_tile_direction = load_image('ex_tile_direction.png')
 
-tile_choose_place = [(33,217),(87,217), (33,156),(87,156) , (33,95),(87,95),(33,34),(87,34)]
+tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
 tile_choose_num = 0
 
 def collocate_tile():
@@ -132,12 +132,12 @@ def draw_scene():
 
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            tile_kind.clip_draw(4 + (55 * ((tile_information_kind[j][i]) % 2)),3 + ((60*4)-(60 * ((tile_information_kind[j][i]+2)// 2))),
+            tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
     #타일그리기
     imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
-    tile_kind.draw((120/2), (250/2))
+    tile_kind.clip_draw(0,0, 120, 250, (120/2), (250/2))
     tile_choose.clip_draw(0,0, 53+1, 61+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])            # 투명화가 필요한데..
     ex_tile_direction.clip_draw(0,0,100,100, WINDOW_WIDTH - (100/2), (400/2))
 
