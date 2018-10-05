@@ -3,11 +3,10 @@ from pico2d import *
 open_canvas()
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
-
+tile_size = 40
 mouse_xpos, mouse_ypos = 0,0
 
 tile_information_kind = [([(1) for i in range(20)]) for j in range(15)]
-
 
 running = True
 click = False
@@ -39,7 +38,7 @@ def load_stage():
 
 
 def handle_events():
-    global running, click, mouse_xpos, mouse_ypos, tile_choose_num
+    global running, click, mouse_xpos, mouse_ypos, tile_choose_num, tile_information_kind
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -68,10 +67,12 @@ def handle_events():
             if event.key == SDLK_1:
                 tile_choose_num = 0
                 set_collocate_tile(0)
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_2:
                 set_collocate_tile(1)
                 tile_choose_num = 1
+                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_3:
                 set_collocate_tile(2)
@@ -111,6 +112,12 @@ def handle_events():
 def window_to_pico_coordinate_system(num):
     return WINDOW_HEIGHT - 1 - num
 
+def set_tile_inforamtion_kind(information, set_tile):
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            information[j][i] = set_tile
+    return information
+
 
 def draw_scene():
     clear_canvas()
@@ -118,7 +125,8 @@ def draw_scene():
 
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            tile_kind.clip_draw(4,3, 40 * (tile_information_kind[j][i]), 40 * (tile_information_kind[j][i]), 20 + i*40, 20 + j * 40)
+            tile_kind.clip_draw(4 + 55* (tile_information_kind[j][i]),3 + 60 * (tile_information_kind[j][i]),
+                                tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
     #타일그리기
     imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
