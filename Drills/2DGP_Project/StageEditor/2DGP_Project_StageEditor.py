@@ -19,8 +19,11 @@ ex_tile_direction = load_image('ex_tile_direction.png')
 tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
 tile_choose_num = 0
 
-def collocate_tile():
-    pass
+def collocate_tile(tile, mouse_x, mouse_y):
+    global tile_information_kind
+    i = (mouse_x) // 40
+    j = (mouse_y) // 40
+    tile_information_kind[j][i] = tile
 
 def set_collocate_tile(num):
     pass
@@ -51,11 +54,12 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
             click = True # 선택한 상태에서 마우스모션과 연계
-            collocate_tile()    #elif 어떤 범위 안이면
+            collocate_tile(tile_choose_num, mouse_xpos, mouse_ypos)    #elif 어떤 범위 안이면
             # 마우스 위치 값, 현재 선택한 타일 정보 필요
             pass
         elif event.type == SDL_MOUSEMOTION and click == True:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
+            #collocate_tile()  # elif 어떤 범위 안이면
             # 마우스를 누른채로 움직이면 한번에 타일이 쫘르륵 그려지게끔 만들자.
             pass
         elif event.type == SDL_MOUSEBUTTONUP:
@@ -67,41 +71,31 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:         #
             if event.key == SDLK_1:
                 tile_choose_num = 0
-                set_collocate_tile(0)
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_2:
-                set_collocate_tile(1)
                 tile_choose_num = 1
-                set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_3:
-                set_collocate_tile(2)
                 tile_choose_num = 2
                 set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_4:
-                set_collocate_tile(3)
                 tile_choose_num = 3
                 set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_5:
-                set_collocate_tile(4)
                 tile_choose_num = 4
                 set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_6:
-                set_collocate_tile(5)
                 tile_choose_num = 5
                 set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_7:
-                set_collocate_tile(6)
                 tile_choose_num = 6
                 set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
             elif event.key == SDLK_8:
-                set_collocate_tile(7)
                 tile_choose_num = 7
                 set_tile_inforamtion_kind(tile_information_kind, tile_choose_num)
                 pass
