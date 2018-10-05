@@ -32,16 +32,23 @@ def clear_stage():
 def save_stage():
     global tile_information_kind
     file = open("save_stage.txt",'w')
-    for i in range(0, 15, 1):
-        data = str(tile_information_kind[i])
-        file.write(data)
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            data = str(tile_information_kind[j][i])
+            file.write(data)
         file.write("\n")
     file.close()
-    pass
 
 def load_stage():
+    global tile_information_kind
+    file = open("save_stage.txt",'r')
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            line = file.readline()
+            tile_information_kind[j][i] = list(line)
+            tile_information_kind[j][i] = int(tile_information_kind[j][i])
+    file.close()
     pass
-
 
 
 
