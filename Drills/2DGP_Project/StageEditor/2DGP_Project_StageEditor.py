@@ -6,6 +6,8 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
 mouse_xpos, mouse_ypos = 0,0
 
+tile_kind_center = 49
+
 running = True
 click = False
 whiteboard = load_image('whiteboard.png')
@@ -13,6 +15,9 @@ imposible_collocate = load_image('imposible_collocate.png')
 tile_kind = load_image('tile_kind.png')
 tile_choose = load_image('tile_choose.png')
 ex_tile_direction = load_image('ex_tile_direction.png')
+
+tile_choose_place = [(27,34),(82,95)]
+tile_choose_num = 0
 
 def collocate_tile():
     pass
@@ -30,7 +35,7 @@ def load_stage():
     pass
 
 def handle_events():
-    global running, click, mouse_xpos, mouse_ypos
+    global running, click, mouse_xpos, mouse_ypos, tile_choose_num
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:                  # 마우스쪽
@@ -52,10 +57,12 @@ def handle_events():
             pass
         elif event.type == SDL_KEYDOWN:         #키 입력 부분
             if event.key == SDLK_1:
+                tile_choose_num = 0
                 set_collocate_tile(1)
                 pass        #1번타일 로드
             elif event.key == SDLK_2:
                 set_collocate_tile(2)
+                tile_choose_num = 1
                 pass        #2번타일 로드.. 아마 8번 타일까지 만드려나?
             elif event.key == SDLK_9:
                 save_stage()
@@ -77,7 +84,7 @@ def draw_scene():
     imposible_collocate.clip_draw(0, 0, 100, 400, (100/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 100, 400, WINDOW_WIDTH - (100 / 2), (400 / 2))
     tile_kind.draw((100/2), (250/2))
-    tile_choose.clip_draw(0,0, 45+1, 68+1, 100/2, 300/2)            # 투명화가 필요한데..
+    tile_choose.clip_draw(0,0, 45+1, 59+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])            # 투명화가 필요한데..
     ex_tile_direction.clip_draw(0,0,100,100, WINDOW_WIDTH - (100/2), (400/2))
     update_canvas()
     handle_events()
