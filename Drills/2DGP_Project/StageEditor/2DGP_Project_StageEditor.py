@@ -30,8 +30,12 @@ def clear_stage():
     set_tile_inforamtion_kind(tile_information_kind, 0)
 
 def save_stage():
+    global tile_information_kind
     file = open("save_stage.txt",'w')
-
+    for i in range(0, 15, 1):
+        data = str(tile_information_kind[i])
+        file.write(data)
+        file.write("\n")
     file.close()
     pass
 
