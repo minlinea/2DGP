@@ -16,7 +16,7 @@ tile_kind = load_image('tile_kind.png')
 tile_choose = load_image('tile_choose.png')
 ex_tile_direction = load_image('ex_tile_direction.png')
 
-tile_choose_place = [(27,34),(82,95)]
+tile_choose_place = [(27,34),(73,34), (27,95), (73,95), (27,156),(73,156),(27,217),(73,217)]
 tile_choose_num = 0
 
 def collocate_tile():
@@ -58,12 +58,36 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:         #키 입력 부분
             if event.key == SDLK_1:
                 tile_choose_num = 0
-                set_collocate_tile(1)
-                pass        #1번타일 로드
+                set_collocate_tile(0)
+                pass
             elif event.key == SDLK_2:
-                set_collocate_tile(2)
+                set_collocate_tile(1)
                 tile_choose_num = 1
-                pass        #2번타일 로드.. 아마 8번 타일까지 만드려나?
+                pass
+            elif event.key == SDLK_3:
+                set_collocate_tile(2)
+                tile_choose_num = 2
+                pass
+            elif event.key == SDLK_4:
+                set_collocate_tile(3)
+                tile_choose_num = 3
+                pass
+            elif event.key == SDLK_5:
+                set_collocate_tile(4)
+                tile_choose_num = 4
+                pass
+            elif event.key == SDLK_6:
+                set_collocate_tile(5)
+                tile_choose_num = 5
+                pass
+            elif event.key == SDLK_7:
+                set_collocate_tile(6)
+                tile_choose_num = 6
+                pass
+            elif event.key == SDLK_8:
+                set_collocate_tile(7)
+                tile_choose_num = 7
+                pass
             elif event.key == SDLK_9:
                 save_stage()
                 pass        # 그렸던 것 저장
