@@ -43,12 +43,10 @@ def load_stage():
     global tile_information_kind
     file = open("save_stage.txt",'r')
     for j in range(0, 15, 1):
+        line = file.readline()
         for i in range(0, 20, 1):
-            line = file.readline()
-            tile_information_kind[j][i] = list(line)
-            tile_information_kind[j][i] = int(tile_information_kind[j][i])
+            tile_information_kind[j][i] = int(line[i:i+1])
     file.close()
-    pass
 
 
 
