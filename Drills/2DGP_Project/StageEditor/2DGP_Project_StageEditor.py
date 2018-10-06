@@ -59,8 +59,6 @@ def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 
             tile_information_kind[j][i] = int(line[i:i+1])
     file.close()
 
-
-
 def handle_events():
     global running, click, mouse_xpos, mouse_ypos, tile_choose_num, tile_information_kind
     events = get_events()
@@ -128,18 +126,15 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
 def draw_scene():
     clear_canvas()
     whiteboard.draw((WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
-
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
-    #타일그리기
     imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
     imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
     tile_kind.clip_draw(0,0, 120, 250, (120/2), (250/2))
     tile_choose.clip_draw(0,0, 53+1, 61+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])            # 투명화가 필요한데..
     ex_tile_direction.clip_draw(0,0,100,100, WINDOW_WIDTH - (100/2), (400/2))
-
     update_canvas()
     handle_events()
 
