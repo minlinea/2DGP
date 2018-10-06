@@ -19,27 +19,38 @@ ex_tile_direction = load_image('ex_tile_direction.png')
 tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
 tile_choose_num = 0
 
-def collocate_tile(tile, mouse_x, mouse_y):
+def collocate_tile(tile, mouse_x, mouse_y):     # 마우스 값을 입력 받아 해당된 곳에, 현재 설정된 타일 배치
     global tile_information_kind
     i = (mouse_x) // 40
     j = (mouse_y) // 40
     tile_information_kind[j][i] = tile
 
-def clear_stage():
+def clear_stage():          # 타일 초기화, 모든 타일을 빈타일로 만듬
     global tile_information_kind
     set_tile_inforamtion_kind(tile_information_kind, 0)
 
-def save_stage():
+def set_tile_inforamtion_kind(information, set_tile):   #clear_stage 사용 함수, 모든 타일을 해당 타일로 변환시켜줌
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            information[j][i] = set_tile
+    return information
+
+def save_stage():           # 현재까지 그린 정보 저장
     global tile_information_kind
     file = open("save_stage.txt",'w')
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            data = str(tile_information_kind[j][i])
+            if ((j >= 5 and j<=8) and ((i>=0 and i<=2) or (i>=17 and i<=19))):
+                data = str(0)
+            elif ((j >= 9) and ((i>=0 and i<=2) or (i>=17 and i<=19))):
+                data = str(1)
+            else:
+                data = str(tile_information_kind[j][i])
             file.write(data)
         file.write("\n")
     file.close()
 
-def load_stage():
+def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
     global tile_information_kind
     file = open("save_stage.txt",'r')
     for j in range(0, 15, 1):
@@ -60,68 +71,59 @@ def handle_events():
             running = False
 
 #------------------------------------------- 마우스 처리----------------------------------------------------#
-        elif event.type == SDL_MOUSEBUTTONDOWN:
+        elif event.type == SDL_MOUSEBUTTONDOWN:         #클릭 시 해당지점 타일 배치
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
-            click = True # 선택한 상태에서 마우스모션과 연계
+            click = True
             collocate_tile(tile_choose_num, mouse_xpos, mouse_ypos)
-            # 마우스 위치 값, 현재 선택한 타일 정보 필요
             pass
-        elif event.type == SDL_MOUSEMOTION and click == True:
+        elif event.type == SDL_MOUSEMOTION and click == True:      # 누른채로 이동하면 해당 이동 구역 전부 타일 배치
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
             collocate_tile(tile_choose_num, mouse_xpos, mouse_ypos)
-            # 마우스를 누른채로 움직이면 한번에 타일이 쫘르륵 그려지게끔 만들자.
             pass
-        elif event.type == SDL_MOUSEBUTTONUP:
+        elif event.type == SDL_MOUSEBUTTONUP:         # 마우스 떼면 더이상 안그려지게끔
             click = False # 마우스 버튼 뗀 순간 마우스모션과 연계 안되게끔
             pass
 # ------------------------------------------- 마우스 처리----------------------------------------------------#
 
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
-        elif event.type == SDL_KEYDOWN:         #
-            if event.key == SDLK_1:
+        elif event.type == SDL_KEYDOWN:
+            if event.key == SDLK_1:      #왼쪽 1번째줄 타일 셋
                 tile_choose_num = 0
                 pass
-            elif event.key == SDLK_2:
+            elif event.key == SDLK_2:    #오른쪽 1번째줄 타일 셋
                 tile_choose_num = 1
                 pass
-            elif event.key == SDLK_3:
+            elif event.key == SDLK_3:   #왼쪽 2번째줄 타일 셋
                 tile_choose_num = 2
                 pass
-            elif event.key == SDLK_4:
+            elif event.key == SDLK_4:   #오른쪽 2번째줄 타일 셋
                 tile_choose_num = 3
                 pass
-            elif event.key == SDLK_5:
+            elif event.key == SDLK_5:   #왼쪽 3번째줄 타일 셋
                 tile_choose_num = 4
                 pass
-            elif event.key == SDLK_6:
+            elif event.key == SDLK_6:   #오른쪽 3번째줄 타일 셋
                 tile_choose_num = 5
                 pass
-            elif event.key == SDLK_7:
+            elif event.key == SDLK_7:   #왼쪽 4번째줄 타일 셋
                 tile_choose_num = 6
                 pass
-            elif event.key == SDLK_8:
+            elif event.key == SDLK_8:   #오른쪽 4번째줄 타일 셋
                 tile_choose_num = 7
                 pass
-            elif event.key == SDLK_9:
+            elif event.key == SDLK_9:   #현재 그려진 타일 저장
                 save_stage()
                 pass  # 그렸던 것 저장
-            elif event.key == SDLK_0:
+            elif event.key == SDLK_0:   #save_stage.txt에 저장된 타일 로드
                 load_stage()
                 pass  # 그렸던 것 로드
-            elif event.key == SDLK_r:
+            elif event.key == SDLK_r:   # 모든 타일 빈타일로 초기화
                 clear_stage()
                 pass  # 맵 초기화
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
 
-def window_to_pico_coordinate_system(num):
+def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환경 마우스 좌표 값 조정 함수
     return WINDOW_HEIGHT - 1 - num
-
-def set_tile_inforamtion_kind(information, set_tile):
-    for j in range(0, 15, 1):
-        for i in range(0, 20, 1):
-            information[j][i] = set_tile
-    return information
-
 
 def draw_scene():
     clear_canvas()
