@@ -16,63 +16,77 @@ move = False
 frame = 0
 character_xpos = 800//2
 character_ypos = 600//2
-character_speed = 0
-state = Enum('state', 'left, right, up, down, hold, death, waiting')
-character_state = state.left
+character_xspeed = 0
+character_yspeed = 0
+state = Enum('state', 'ground, air, hold, death, waiting')
+character_state = state.hold
+
 
 def character_move(move_type):
     if (move_type == SDLK_LEFT):
         move_left(-0.5)
-        set_character_state(state.left)
     elif (move_type == SDLK_RIGHT):
         move_right(0.5)
-        set_character_state(state.right)
     elif (move_type == SDLK_UP):
        jump()
     elif (move_type == SDLK_DOWN):
         instant_down()
     pass
 
+
 def move_left(movement):
-    global character_speed
-    character_speed += movement
+    global character_xspeed
+    character_xspeed += movement
+    set_character_state(state.ground)
     #바라보는 방향 추가
     pass
 
 
 def move_right(movement):
-    global character_speed
-    character_speed += movement
+    global character_xspeed
+    character_xspeed += movement
+    set_character_state(state.ground)
     # 바라보는 방향 추가
     pass
 
+
 def character_move_calculation(xpos, ypos, type):
-    global character_speed
-    if (type == state.left):
-        xpos += character_speed
-        ypos += 0
-    elif (type == state.right):
-        xpos += character_speed
-        ypos += 0
+    global character_xspeed, character_yspeed
+    xpos += character_xspeed
+    ypos += character_yspeed
     return xpos,ypos
     pass
+
+
 def jump():
     pass
 
 def instant_down():
     pass
 
+def contact_character(xpos, ypos, xspeed, yspeed):
+    character_xbox = (xpos//40) + 1
+    character_ybox = (ypos//40) + 1
+
+    predict_character_xbox = ((xpos + xspeed) // 40) + 1
+    predict_charactet_ybox = ((ypos + yspeed) // 40) + 1
+
+    if (abs(character_xspeed - predict_character_xbox) + abs(character_yspeed - predict_charactet_ybox) < 1):
+        pass
+    elif(abs(character_xspeed - predict_character_xbox) != 0):
+        pass
+    elif (abs(character_yspeed - predict_charactet_ybox) != 0):
+        pass
+    pass
+
+
 
 def set_character_state(type):
     global character_state
-    if (type == state.left):
-        character_state = state.left
-    elif (type == state.right):
-        character_state = state.right
-    elif (type == state.up):
-        character_state = state.up
-    elif (type == state.down):
-        character_state = state.down
+    if (type == state.ground):
+        character_state = state.ground
+    elif (type == state.air):
+        character_state = state.air
     elif (type == state.hold):
         character_state = state.hold
     elif (type == state.death):
@@ -120,8 +134,10 @@ def handle_events():
                 move = False
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
 
+
 def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환경 마우스 좌표 값 조정 함수
     return WINDOW_HEIGHT - 1 - num
+
 
 def draw_scene():
     global frame, character_xpos, character_ypos, character_state, character_speed
@@ -132,7 +148,8 @@ def draw_scene():
             tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
 
-    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_ypos)
+    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_xpos)
+                #캐릭터 네모 칸의 위치는 ((xpos//40)+1, (ypos//40 +1)
     if move == True:
         frame = (frame + 1) % 8
     else:
