@@ -14,8 +14,8 @@ running = True
 move = False
 
 frame = 0
-character_xpos = 800//2
-character_ypos = 600//2
+character_xpos = 650//2
+character_ypos = 270
 character_xspeed = 0
 character_yspeed = 0
 state = Enum('state', 'ground, air, hold, death, waiting')
@@ -65,24 +65,30 @@ def instant_down():
 
 def contact_character(xpos, ypos, xspeed, yspeed):
     global tile_information
-    character_xbox = (xpos//40) + 1
-    character_ybox = (ypos//40) + 1
+    character_xbox = int (((20 + xpos)//40))
+    character_ybox = int (((20 + ypos)//40) - 1)
 
     if (xspeed>0):
-        predict_character_xbox = ((20 + xpos + xspeed) // 40) + 1
+        predict_character_xbox = int(((40 + xpos + xspeed) // 40))
+    elif (xspeed<0):
+        predict_character_xbox = int(((0 + xpos + xspeed) // 40))
     else :
-        predict_character_xbox = ((-20 + xpos + xspeed) // 40) + 1
+        predict_character_xbox = int(((20 + xpos + xspeed) // 40))
 
     if (yspeed>0):
-        predict_charactet_ybox = ((20 + ypos + yspeed) // 40) + 1
+        predict_charactet_ybox = int(((40 + ypos + yspeed) // 40) - 1)
+    elif (yspeed<0):
+        predict_charactet_ybox = int(((0 + ypos + yspeed) // 40) - 1)
     else :
-        predict_charactet_ybox = ((-20 + ypos + yspeed) // 40) + 1
+        predict_charactet_ybox = int(((20 + ypos + yspeed) // 40) - 1)
 
-    if (abs(character_xspeed - predict_character_xbox) + abs(character_yspeed - predict_charactet_ybox) < 1):
+    if (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) < 1):
         pass
-    elif(abs(character_xspeed - predict_character_xbox) != 0):
+    elif(abs(character_xbox - predict_character_xbox) != 0):
+        if (tile_information[predict_charactet_ybox][predict_character_xbox] == 2):
+            return state.death
         pass
-    elif (abs(character_yspeed - predict_charactet_ybox) != 0):
+    elif (abs(character_ybox - predict_charactet_ybox) != 0):
         pass
     pass
 
@@ -147,7 +153,7 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
 
 
 def draw_scene():
-    global frame, character_xpos, character_ypos, character_state, character_xspeed, character_yspeed
+    global frame, character_xpos, character_ypos, character_state
     clear_canvas()
 
     for j in range(0, 15, 1):
@@ -155,8 +161,8 @@ def draw_scene():
             tile_kind.clip_draw(5 + (42 * ((tile_information[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
 
-    contact_character(character_xpos, character_ypos, character_xspeed, character_yspeed)
-    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_ypos)
+    if(character_state != state.death):
+        character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_ypos)
     if move == True:
         frame = (frame + 1) % 8
     else:
@@ -165,6 +171,7 @@ def draw_scene():
     if (character_state != state.hold):
         character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos,
                                                                 character_xspeed, character_yspeed, character_state)
+    character_state = contact_character(character_xpos, character_ypos, character_xspeed, character_yspeed)
     update_canvas()
     handle_events()
 
