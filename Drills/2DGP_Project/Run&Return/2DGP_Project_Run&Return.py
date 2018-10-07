@@ -14,7 +14,8 @@ running = True
 move = False
 frame = 0
 character_xpos = 800//2
-dir = 0
+character_ypos = 600//2
+character_speed = 0
 
 def character_move(move_type):
     if (move_type == SDLK_LEFT):
@@ -28,17 +29,22 @@ def character_move(move_type):
     pass
 
 def move_left(movement):
-    global dir
-    dir += movement
+    global character_speed
+    character_speed += movement
     #바라보는 방향 추가
     pass
 
 def move_right(movement):
-    global dir
-    dir += movement
+    global character_speed
+    character_speed += movement
     # 바라보는 방향 추가
     pass
 
+def character_move_calculation(xpos, ypos, type, movement):
+    xpos += movement
+    ypos += 0
+    return xpos,ypos
+    pass
 def jump():
     pass
 
@@ -59,7 +65,7 @@ def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 
     file.close()
 
 def handle_events():
-    global running, move
+    global running, move, character_speed
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -92,7 +98,7 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
     return WINDOW_HEIGHT - 1 - num
 
 def draw_scene():
-    global frame, character_xpos
+    global frame, character_xpos, character_ypos
     clear_canvas()
 
     for j in range(0, 15, 1):
@@ -100,12 +106,13 @@ def draw_scene():
             tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
 
-    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, 600//2)
+    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_ypos)
     if move == True:
         frame = (frame + 1) % 8
     else:
         frame = 0
-    character_xpos += dir
+
+    character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos, type, character_speed)
     update_canvas()
     handle_events()
 
