@@ -16,6 +16,26 @@ frame = 0
 character_xpos = 800//2
 dir = 0
 
+def character_move(move_type):
+    move_left()
+    move_right()
+    jump()
+    instant_down()
+    pass
+
+def move_left():
+    pass
+
+def move_right():
+    pass
+
+def jump():
+    pass
+
+def instant_down():
+    pass
+
+
 
 def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
     global tile_information_kind
