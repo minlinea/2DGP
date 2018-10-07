@@ -5,7 +5,7 @@ open_canvas()
 WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
 tile_size = 40
-tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
+tile_information = [([(0) for i in range(20)]) for j in range(15)]
 
 tile_kind = load_image('tile_kind.png')
 character = load_image('run_animation.png')
@@ -50,11 +50,10 @@ def move_right(movement):
     pass
 
 
-def character_move_calculation(xpos, ypos, type):
-    global character_xspeed, character_yspeed
-    xpos += character_xspeed
-    ypos += character_yspeed
-    return xpos,ypos
+def character_move_calculation(xpos, ypos, xspeed, yspeed, type):
+    xpos += xspeed
+    ypos += yspeed
+    return xpos, ypos
     pass
 
 
@@ -65,11 +64,19 @@ def instant_down():
     pass
 
 def contact_character(xpos, ypos, xspeed, yspeed):
+    global tile_information
     character_xbox = (xpos//40) + 1
     character_ybox = (ypos//40) + 1
 
-    predict_character_xbox = ((xpos + xspeed) // 40) + 1
-    predict_charactet_ybox = ((ypos + yspeed) // 40) + 1
+    if (xspeed>0):
+        predict_character_xbox = ((20 + xpos + xspeed) // 40) + 1
+    else :
+        predict_character_xbox = ((-20 + xpos + xspeed) // 40) + 1
+
+    if (yspeed>0):
+        predict_charactet_ybox = ((20 + ypos + yspeed) // 40) + 1
+    else :
+        predict_charactet_ybox = ((-20 + ypos + yspeed) // 40) + 1
 
     if (abs(character_xspeed - predict_character_xbox) + abs(character_yspeed - predict_charactet_ybox) < 1):
         pass
@@ -96,16 +103,16 @@ def set_character_state(type):
 
 
 def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
-    global tile_information_kind
+    global tile_information
     file = open("save_stage.txt",'r')
     for j in range(0, 15, 1):
         line = file.readline()
         for i in range(0, 20, 1):
-            tile_information_kind[j][i] = int(line[i:i+1])
+            tile_information[j][i] = int(line[i:i+1])
     file.close()
 
 def handle_events():
-    global running, move, character_speed
+    global running, move
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -140,22 +147,24 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
 
 
 def draw_scene():
-    global frame, character_xpos, character_ypos, character_state, character_speed
+    global frame, character_xpos, character_ypos, character_state, character_xspeed, character_yspeed
     clear_canvas()
 
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
+            tile_kind.clip_draw(5 + (42 * ((tile_information[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
 
-    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_xpos)
-                #캐릭터 네모 칸의 위치는 ((xpos//40)+1, (ypos//40 +1)
+    contact_character(character_xpos, character_ypos, character_xspeed, character_yspeed)
+    character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_ypos)
     if move == True:
         frame = (frame + 1) % 8
     else:
         frame = 0
 
-    character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos, character_state)
+    if (character_state != state.hold):
+        character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos,
+                                                                character_xspeed, character_yspeed, character_state)
     update_canvas()
     handle_events()
 
