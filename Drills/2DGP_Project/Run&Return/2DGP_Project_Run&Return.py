@@ -1,27 +1,32 @@
 from pico2d import *
-
+from enum import Enum
 open_canvas()
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
-tile_size = 40
 
+tile_size = 40
 tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
 
 tile_kind = load_image('tile_kind.png')
 character = load_image('run_animation.png')
-running = True
 
+running = True
 move = False
+
 frame = 0
 character_xpos = 800//2
 character_ypos = 600//2
 character_speed = 0
+state = Enum('state', 'left, right, up, down, hold, death, waiting')
+character_state = state.left
 
 def character_move(move_type):
     if (move_type == SDLK_LEFT):
         move_left(-0.5)
+        set_character_state(state.left)
     elif (move_type == SDLK_RIGHT):
         move_right(0.5)
+        set_character_state(state.right)
     elif (move_type == SDLK_UP):
        jump()
     elif (move_type == SDLK_DOWN):
@@ -34,15 +39,21 @@ def move_left(movement):
     #바라보는 방향 추가
     pass
 
+
 def move_right(movement):
     global character_speed
     character_speed += movement
     # 바라보는 방향 추가
     pass
 
-def character_move_calculation(xpos, ypos, type, movement):
-    xpos += movement
-    ypos += 0
+def character_move_calculation(xpos, ypos, type):
+    global character_speed
+    if (type == state.left):
+        xpos += character_speed
+        ypos += 0
+    elif (type == state.right):
+        xpos += character_speed
+        ypos += 0
     return xpos,ypos
     pass
 def jump():
@@ -51,9 +62,24 @@ def jump():
 def instant_down():
     pass
 
-def character_setting():
-    #위치좌표, 상태
-    pass
+
+def set_character_state(type):
+    global character_state
+    if (type == state.left):
+        character_state = state.left
+    elif (type == state.right):
+        character_state = state.right
+    elif (type == state.up):
+        character_state = state.up
+    elif (type == state.down):
+        character_state = state.down
+    elif (type == state.hold):
+        character_state = state.hold
+    elif (type == state.death):
+        character_state = state.death
+    elif (type == state.waiting):
+        character_state = state.waiting
+
 
 def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
     global tile_information_kind
@@ -98,7 +124,7 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
     return WINDOW_HEIGHT - 1 - num
 
 def draw_scene():
-    global frame, character_xpos, character_ypos
+    global frame, character_xpos, character_ypos, character_state, character_speed
     clear_canvas()
 
     for j in range(0, 15, 1):
@@ -112,7 +138,7 @@ def draw_scene():
     else:
         frame = 0
 
-    character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos, type, character_speed)
+    character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos, character_state)
     update_canvas()
     handle_events()
 
