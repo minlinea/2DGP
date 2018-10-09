@@ -51,6 +51,7 @@ def save_stage():           # 현재까지 그린 정보 저장
         file.write("\n")
     file.close()
 
+
 def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
     global tile_information_kind
     file = open("save_stage.txt",'r')
@@ -125,11 +126,15 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
 
 def draw_scene():
     clear_canvas()
+
     whiteboard.draw(whiteboard.x , whiteboard.y)
+
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
-                                tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
+            tile_kind.clip_draw(20 + i*tile_size, 20 + j * tile_size,
+                                5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
+                                tile_size, tile_size)
+
 
     imposible_collocate.clip_draw((120/2), imposible_collocate.y, imposible_collocate.left,
                                   imposible_collocate.bottom, imposible_collocate.width, imposible_collocate.height)
@@ -137,12 +142,12 @@ def draw_scene():
     imposible_collocate.clip_draw(WINDOW_WIDTH - (120 / 2), imposible_collocate.y, imposible_collocate.left,
                                   imposible_collocate.bottom, imposible_collocate.width, imposible_collocate.height)
 
-    tile_kind.clip_draw(0,0, 120, 250, (120/2), (250/2))
+    tile_kind.clip_draw(tile_kind.x, tile_kind.y, tile_kind.left,tile_kind.bottom, tile_kind.width, tile_kind.height)
 
     tile_choose.clip_draw(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
                           tile_choose.left, tile_choose.bottom, tile_choose.width, tile_choose.height)
 
-    # 이미지를 회전 시켜봅시다.
+    # 이미지를 회전 시켜봅시다. 윽 안된다.
 
     update_canvas()
 
@@ -162,12 +167,12 @@ tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
 running = True
 click = False
 
+
+tile_kind = Image((120/2), (250/2), 0,0, 120, 250, 'tile_kind.png')
 whiteboard = Image(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 , 0,0,0,0, 'whiteboard.png')
 imposible_collocate = Image((120/2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
-tile_kind = load_image('tile_kind.png')
 tile_choose = Image(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
                     0,0, 53+1, 61+1, 'tile_choose.png')
-
 
 
 #--------------------- initialization code ---------------------#
