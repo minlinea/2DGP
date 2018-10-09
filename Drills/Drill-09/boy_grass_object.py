@@ -1,5 +1,5 @@
 from pico2d import *
-
+import random
 # Game object class here
 class Grass:
     def __init__(self):     #생성자 함수 self = this, 속성을 정의해준다.
@@ -10,9 +10,10 @@ class Grass:
 
 class Boy:
     def __init__(self):
-        self.x, self.y = 0, 90
-        self.frame = 0
+        self.x, self.y = random.randint(100, 700), 90
+        self.frame = random.randint(0,7)
         self.image = load_image('run_animation.png')
+
 
     def update(self):
         self.frame = (self.frame + 1) % 8
@@ -34,7 +35,7 @@ def handle_events():
 # initialization code
 open_canvas()
 
-boy = Boy()
+team = [Boy() for i in range(11)]
 grass = Grass()
 
 running = True
@@ -44,14 +45,25 @@ running = True
 while running:
     handle_events()     #사용자 입력
 
-    boy.update()        #게임 로직
+    for boy in team:
+        boy.update()        #게임 로직
 
+#------------------------------------------렌더링 파트------------------------------------#
     clear_canvas()      #렌더링
     grass.draw()
-    boy.draw()
+
+    for boy in team:
+        boy.draw()
     update_canvas()
 
     delay(0.05)     # --> handle_events(사용자 입력)로 돌아가는 것 = 게임 루프
+
+# ------------------------------------------렌더링 파트------------------------------------#
+
+
+
+
+
 
 # finalization code
 
