@@ -1,6 +1,6 @@
 from pico2d import *
 
-open_canvas()
+
 
 class Image:
     def __init__(self, x, y, title):
@@ -8,7 +8,8 @@ class Image:
         self.image = load_image(title)
 
     def draw(self):
-        pass
+        self.image.draw(self.x, self.y)
+
 
     def clip_draw(self):
         pass
@@ -18,22 +19,6 @@ class Image:
 
 
 
-
-WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
-tile_size = 40
-mouse_xpos, mouse_ypos = 0,0
-
-tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
-
-running = True
-click = False
-whiteboard = load_image('whiteboard.png')
-imposible_collocate = load_image('imposible_collocate.png')
-tile_kind = load_image('tile_kind.png')
-tile_choose = load_image('tile_choose.png')
-
-tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
-tile_choose_num = 0
 
 def collocate_tile(tile, mouse_x, mouse_y):     # 마우스 값을 입력 받아 해당된 곳에, 현재 설정된 타일 배치
     global tile_information_kind
@@ -140,7 +125,7 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
 
 def draw_scene():
     clear_canvas()
-    whiteboard.draw((WINDOW_WIDTH)/2, (WINDOW_HEIGHT)/2)
+    whiteboard.draw()
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
@@ -156,9 +141,40 @@ def draw_scene():
     update_canvas()
     handle_events()
 
+#--------------------- initialization code ---------------------#
+
+open_canvas()
+
+WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
+tile_size = 40
+mouse_xpos, mouse_ypos = 0,0
+
+tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
+
+running = True
+click = False
+
+whiteboard = Image(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 , 'whiteboard.png')
+imposible_collocate = load_image('imposible_collocate.png')
+tile_kind = load_image('tile_kind.png')
+tile_choose = load_image('tile_choose.png')
+
+tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
+tile_choose_num = 0
+
+#--------------------- initialization code ---------------------#
 
 
+
+
+
+
+#--------------------- game main loop code ---------------------#
 while running:
     draw_scene()
+#--------------------- game main loop code ---------------------#
 
+
+
+# finalization code
 close_canvas()
