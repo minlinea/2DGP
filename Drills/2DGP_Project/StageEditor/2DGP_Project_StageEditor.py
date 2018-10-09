@@ -3,8 +3,10 @@ from pico2d import *
 
 
 class Image:
-    def __init__(self, x, y, title):
+    def __init__(self, x, y, left, bottom, width, height, title):
         self.x, self.y = x,y
+        self.left, self.bottom = left, bottom
+        self.width, self.height =  width, height
         self.image = load_image(title)
 
     def draw(self):
@@ -12,7 +14,7 @@ class Image:
 
 
     def clip_draw(self):
-        pass
+        self.image.clip_draw(self.left,self.bottom,self.width, self.height,self.x,self.y)
 
     pass
 
@@ -130,8 +132,8 @@ def draw_scene():
         for i in range(0, 20, 1):
             tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
-    imposible_collocate.clip_draw(0, 0, 120, 400, (120/ 2), (400/2))
-    imposible_collocate.clip_draw(0, 0, 120, 400, WINDOW_WIDTH - (120 / 2), (400 / 2))
+    imposible_collocate_left.clip_draw()
+    imposible_collocate_right.clip_draw()
     tile_kind.clip_draw(0,0, 120, 250, (120/2), (250/2))
     tile_choose.clip_draw(0,0, 53+1, 61+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])
 
@@ -154,8 +156,9 @@ tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
 running = True
 click = False
 
-whiteboard = Image(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 , 'whiteboard.png')
-imposible_collocate = load_image('imposible_collocate.png')
+whiteboard = Image(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 , 0,0,0,0, 'whiteboard.png')
+imposible_collocate_left = Image((120/2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
+imposible_collocate_right = Image(WINDOW_WIDTH - (120 / 2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
 tile_kind = load_image('tile_kind.png')
 tile_choose = load_image('tile_choose.png')
 
