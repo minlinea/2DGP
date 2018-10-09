@@ -24,28 +24,34 @@ class Boy:
 
 class Smallball:
     def __init__(self):
-        self.x, self.y = random.randint(0, 600), 599
-        self.speed = random.randint(1, 10)
+        self.x, self.y = random.randint(0, 800), 599
+        self.speed = random.randint(5, 15)
         self.image = load_image('ball21x21.png')
 
     def update(self):
-        self.y -= self.speed
+        if(self.y > 21//2 + 60 - 2):
+            self.y -= self.speed
+        if (self.y < 21//2 + 60 - 2):
+            self.y = 21//2 + 60 - 2
 
     def draw(self):
-        self.image.clip_draw(0, 0, 23, 23, self.x, self.y)
+        self.image.clip_draw(0, 0, 21, 21, self.x, self.y)
 
 
 class Bigball:
     def __init__(self):
-        self.x, self.y = random.randint(0, 600), 599
-        self.speed = random.randint(1, 10)
+        self.x, self.y = random.randint(0, 800), 599
+        self.speed = random.randint(5, 15)
         self.image = load_image('ball41x41.png')
 
     def update(self):
-        self.y -= self.speed
+        if (self.y > 41 // 2 + 60 - 2):
+            self.y -= self.speed
+        if (self.y < 41 // 2 + 60 - 2):
+            self.y = 41 // 2 + 60 - 2
 
     def draw(self):
-        self.image.clip_draw(0, 0, 43, 43, self.x, self.y)
+        self.image.clip_draw(0, 0, 41, 41, self.x, self.y)
 
 def handle_events():
     global running
