@@ -62,7 +62,9 @@ open_canvas()
 team = [Boy() for i in range(11)]
 grass = Grass()
 
-
+randomnum = random.randint(1,20)
+smallballs = [Smallball() for i in range(randomnum) ]
+bigballs = [Bigball() for i in range(20-randomnum)]
 
 running = True
 
@@ -74,12 +76,23 @@ while running:
     for boy in team:
         boy.update()        #게임 로직
 
+    for bigball in bigballs:
+        bigball.update()
+
+    for smallball in smallballs:
+        smallball.update()
 #------------------------------------------렌더링 파트------------------------------------#
     clear_canvas()      #렌더링
     grass.draw()
 
     for boy in team:
         boy.draw()
+
+    for bigball in bigballs:
+        bigball.draw()
+
+    for smallball in smallballs:
+        smallball.draw()
     update_canvas()
 
     delay(0.05)     # --> handle_events(사용자 입력)로 돌아가는 것 = 게임 루프
