@@ -9,13 +9,14 @@ class Image:
         self.width, self.height =  width, height
         self.image = load_image(title)
 
-    def draw(self):
-        self.image.draw(self.x, self.y)
+    def draw(self, x, y):
+        self.image.draw(x, y)
 
+    def clip_draw(self, x, y, left, bottom, width, height):
+        self.image.clip_draw(left,bottom,width, height,x,y)
 
-    def clip_draw(self):
-        self.image.clip_draw(self.left,self.bottom,self.width, self.height,self.x,self.y)
-
+    def set_variable(self, x, y, left, bottom, width, height):
+        pass
     pass
 
 
@@ -28,27 +29,24 @@ def collocate_tile(tile, mouse_x, mouse_y):     # 마우스 값을 입력 받아
     j = (mouse_y) // 40
     tile_information_kind[j][i] = tile
 
-def clear_stage():          # 타일 초기화, 모든 타일을 빈타일로 만듬
-    global tile_information_kind
-    set_tile_inforamtion_kind(tile_information_kind, 0)
-
-def set_tile_inforamtion_kind(information, set_tile):   #clear_stage 사용 함수, 모든 타일을 해당 타일로 변환시켜줌
+def clear_stage(information, set_tile):          # 타일 초기화, 모든 타일을 빈타일로 만듬
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             information[j][i] = set_tile
     return information
+
 
 def save_stage():           # 현재까지 그린 정보 저장
     global tile_information_kind
     file = open("save_stage.txt",'w')
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            if ((j >= 5 and j<=8) and ((i>=0 and i<=2) or (i>=17 and i<=19))):
+            if ((j >= 5 and j<=8) and ((i>=0 and i<=2) or (i>=17 and i<=19))):  # 생성 불가능 지역 빈 공간
                 data = str(0)
-            elif ((j >= 9) and ((i>=0 and i<=2) or (i>=17 and i<=19))):
+            elif ((j >= 9) and ((i>=0 and i<=2) or (i>=17 and i<=19))):     # 생성 불가능 지역 일반 블록 부분
                 data = str(1)
             else:
-                data = str(tile_information_kind[j][i])
+                data = str(tile_information_kind[j][i])     # 생성 불가능 지역이 아니면 저장된 정보 저장
             file.write(data)
         file.write("\n")
     file.close()
@@ -56,10 +54,10 @@ def save_stage():           # 현재까지 그린 정보 저장
 def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
     global tile_information_kind
     file = open("save_stage.txt",'r')
-    for j in range(0, 15, 1):
+    for j in range(0, 15, 1):           #한 줄씩 읽는다.
         line = file.readline()
         for i in range(0, 20, 1):
-            tile_information_kind[j][i] = int(line[i:i+1])
+            tile_information_kind[j][i] = int(line[i:i+1])      # 한글자씩 슬라이스 해서 읽는다.
     file.close()
 
 
@@ -118,7 +116,7 @@ def handle_events():
                 load_stage()
                 pass  # 그렸던 것 로드
             elif event.key == SDLK_r:   # 모든 타일 빈타일로 초기화
-                clear_stage()
+                clear_stage(tile_information_kind, 0)
                 pass  # 맵 초기화
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
 
@@ -127,21 +125,26 @@ def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환�
 
 def draw_scene():
     clear_canvas()
-    whiteboard.draw()
+    whiteboard.draw(whiteboard.x , whiteboard.y)
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             tile_kind.clip_draw(5 + (42 * ((tile_information_kind[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information_kind[j][i]+2)// 2))),
                                 tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
-    imposible_collocate_left.clip_draw()
-    imposible_collocate_right.clip_draw()
+
+    imposible_collocate.clip_draw((120/2), imposible_collocate.y, imposible_collocate.left,
+                                  imposible_collocate.bottom, imposible_collocate.width, imposible_collocate.height)
+
+    imposible_collocate.clip_draw(WINDOW_WIDTH - (120 / 2), imposible_collocate.y, imposible_collocate.left,
+                                  imposible_collocate.bottom, imposible_collocate.width, imposible_collocate.height)
+
     tile_kind.clip_draw(0,0, 120, 250, (120/2), (250/2))
-    tile_choose.clip_draw(0,0, 53+1, 61+1, tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])
+
+    tile_choose.clip_draw(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
+                          tile_choose.left, tile_choose.bottom, tile_choose.width, tile_choose.height)
 
     # 이미지를 회전 시켜봅시다.
 
-
     update_canvas()
-    handle_events()
 
 #--------------------- initialization code ---------------------#
 
@@ -151,19 +154,21 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 tile_size = 40
 mouse_xpos, mouse_ypos = 0,0
 
+tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
+tile_choose_num = 0
+
 tile_information_kind = [([(0) for i in range(20)]) for j in range(15)]
 
 running = True
 click = False
 
 whiteboard = Image(WINDOW_WIDTH // 2, WINDOW_HEIGHT // 2 , 0,0,0,0, 'whiteboard.png')
-imposible_collocate_left = Image((120/2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
-imposible_collocate_right = Image(WINDOW_WIDTH - (120 / 2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
+imposible_collocate = Image((120/2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
 tile_kind = load_image('tile_kind.png')
-tile_choose = load_image('tile_choose.png')
+tile_choose = Image(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
+                    0,0, 53+1, 61+1, 'tile_choose.png')
 
-tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
-tile_choose_num = 0
+
 
 #--------------------- initialization code ---------------------#
 
@@ -174,7 +179,21 @@ tile_choose_num = 0
 
 #--------------------- game main loop code ---------------------#
 while running:
+    # -----------------------------------사용자 입력----------------------------------#
+
+    handle_events()
+
+    # ------------------------------------사용자 입력----------------------------------#
+
+    # ------------------------------------게임 로직-------------------------------------#
+
+    # 스테이지 에디터에서는 존재하지 않음
+
+    # ------------------------------------게임 로직-------------------------------------#
+
+    # -------------------------------------렌더링--------------------------------------#
     draw_scene()
+    # -------------------------------------렌더링--------------------------------------#
 #--------------------- game main loop code ---------------------#
 
 
