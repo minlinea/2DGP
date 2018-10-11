@@ -88,7 +88,7 @@ def run(start_state):
     stack = [start_state]
     start_state.enter()
     while (running):
-        stack[-1].handle_events()
+        stack[-1].handle_events()       #현재 state == Top에 있다.
         stack[-1].update()
         stack[-1].draw()
     # repeatedly delete the top of the stack
