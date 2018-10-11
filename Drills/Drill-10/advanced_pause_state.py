@@ -25,7 +25,7 @@ def update():
 def draw():
     global image
     clear_canvas()
-    image.clip_draw(0,0,900,900,400,300)
+    image.clip_draw(0,0,600,600,400,300)
     update_canvas()
 
 
