@@ -26,7 +26,8 @@ def draw():
     global image
     clear_canvas()
 
-    main_state.draw()
+    main_state.boy.draw()
+    main_state.grass.draw()
     image.draw(400,300, 100, 100)
 
     update_canvas()
