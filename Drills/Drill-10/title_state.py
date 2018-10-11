@@ -1,4 +1,5 @@
 import game_framework
+import main_state
 from pico2d import *
 
 
@@ -24,7 +25,8 @@ def handle_events():
         else:
             if(event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
-
+            elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+                game_framework.change_state(main_state)
 
 
 def draw():
