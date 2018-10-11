@@ -5,10 +5,11 @@ from pico2d import *
 
 name = "PauseState"
 image = None
-
+delay_time = 0
 
 def enter():
     global image
+    delay_time = 0
     image = load_image('pause.png')
 
 
@@ -19,6 +20,8 @@ def exit():
 
 
 def update():
+    global delay_time
+    delay_time = (delay_time + 1) % 250
     pass
 
 
@@ -28,7 +31,8 @@ def draw():
 
     main_state.boy.draw()
     main_state.grass.draw()
-    image.draw(400,300, 100, 100)
+    if(delay_time < 150):
+        image.draw(400,300, 100, 100)
 
     update_canvas()
 
