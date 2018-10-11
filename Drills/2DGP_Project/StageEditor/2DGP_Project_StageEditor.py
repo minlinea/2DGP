@@ -15,9 +15,6 @@ class Image:
     def clip_draw(self, x, y, left, bottom, width, height):
         self.image.clip_draw(left,bottom,width, height,x,y)
 
-    def set_variable(self, x, y, left, bottom, width, height):
-        pass
-    pass
 
 
 #----------------------------------------게임 오브젝트 클래스--------------------------------------#
