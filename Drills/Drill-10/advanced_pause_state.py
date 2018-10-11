@@ -8,7 +8,7 @@ image = None
 delay_time = 0
 
 def enter():
-    global image
+    global image, delay_time
     delay_time = 0
     image = load_image('pause.png')
 
