@@ -101,6 +101,15 @@ while running:
         smallball.draw()
     update_canvas()
 
+
+    # balls = bigball + smallball
+    # for ball in balls:
+    # ball.draw()
+
+    # world = balls + team
+    # for thing in world:
+    # thing.draw()
+
     delay(0.05)     # --> handle_events(사용자 입력)로 돌아가는 것 = 게임 루프
 
 # ------------------------------------------렌더링 파트------------------------------------#
