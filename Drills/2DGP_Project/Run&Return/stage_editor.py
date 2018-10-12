@@ -1,3 +1,5 @@
+import game_framework
+import title_state
 from pico2d import *
 
 
@@ -15,7 +17,18 @@ class Image:
     def clip_draw(self, x, y, left, bottom, width, height):
         self.image.clip_draw(left,bottom,width, height,x,y)
 
+class Tile:
+    def __init__(self, vertical, horizon):
+        self.y, self.x = vertical, horizon
+        self.type = 0
+        self.size = 40
+        self.image = load_image('tile_kind.png')
+        tile_information = [([(0) for i in range(20)]) for j in range(15)]
+        pass
 
+    def draw(self):
+        self.image.clip_draw(5 + (42 * (self.type % 2)), 4 + ((42 * 4) - (42 * ((self.type + 2) // 2))),
+                            self.size, self.size, 20 + self.x * self.size, 20 + self.y * self.size)
 
 #----------------------------------------게임 오브젝트 클래스--------------------------------------#
 
@@ -60,18 +73,13 @@ def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 
     file.close()
 
 def handle_events():
-    global running, click, mouse_xpos, mouse_ypos, tile_information_kind
+    global running, click, tile_information_kind
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT or (event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE):
             running = False
 
-        elif event.type == SDL_MOUSEBUTTONDOWN or (event.type == SDL_MOUSEMOTION and click == True) or event.type == SDL_MOUSEBUTTONUP:
-            mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
-            click = event_MOUSE(event.type, mouse_xpos, mouse_ypos, click, tile_choose_num)
 
-        elif event.type == SDL_KEYDOWN:
-            event_KEYDOWN(event.key)
 
 def event_MOUSE(type, x, y, click, tile):      # 마우스 처리
     if type == SDL_MOUSEBUTTONDOWN:  # 클릭 시 해당지점 타일 배치
@@ -149,7 +157,6 @@ open_canvas()
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 tile_size = 40
-mouse_xpos, mouse_ypos = 0,0
 
 tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
 tile_choose_num = 0
@@ -194,6 +201,73 @@ while running:
 #--------------------- game main loop code ---------------------#
 
 
+class Tile:
+    def __init__(self, vertical, horizon):
+        self.y, self.x = vertical, horizon
+        self.type = 0
+        self.size = 40
+        self.image = load_image('tile_kind.png')
+        tile_information = [([(0) for i in range(20)]) for j in range(15)]
+        pass
 
-# finalization code
-close_canvas()
+    def draw(self):
+        self.image.clip_draw(5 + (42 * (self.type % 2)), 4 + ((42 * 4) - (42 * ((self.type + 2) // 2))),
+                            self.size, self.size, 20 + self.x * self.size, 20 + self.y * self.size)
+
+
+def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
+    global tile
+    file = open("save_stage.txt", 'r')
+    for j in range(0, 15, 1):
+        line = file.readline()
+        for i in range(0, 20, 1):
+            tile[j][i].type = int(line[i:i + 1])
+    file.close()
+
+def enter():
+    global tile
+    tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
+    load_stage()
+    pass
+
+
+def exit():
+    global tile
+    del(tile)
+
+
+def pause():
+    pass
+
+
+def resume():
+    pass
+
+
+def update():
+    pass
+
+
+def draw():
+    clear_canvas()
+
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            tile[j][i].draw()
+    update_canvas()
+
+
+def handle_events():
+    events = get_events()
+    for event in events:
+        if event.type == SDL_QUIT:
+            game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+            game_framework.change_stage(title_state)
+        elif event.type == SDL_MOUSEBUTTONDOWN or (
+                event.type == SDL_MOUSEMOTION and click == True) or event.type == SDL_MOUSEBUTTONUP:
+            mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
+            click = event_MOUSE(event.type, mouse_xpos, mouse_ypos, click, tile_choose_num)
+
+        elif event.type == SDL_KEYDOWN:
+            event_KEYDOWN(event.key)
