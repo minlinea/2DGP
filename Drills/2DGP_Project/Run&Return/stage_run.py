@@ -1,183 +1,195 @@
+import game_framework
+import stage_run_practice
 from pico2d import *
+
 from enum import Enum
-open_canvas()
 
-WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
-
-tile_size = 40
-tile_information = [([(0) for i in range(20)]) for j in range(15)]
-
-tile_kind = load_image('tile_kind.png')
-character = load_image('run_animation.png')
-
-running = True
-move = False
-
-frame = 0
-character_xpos = 650//2
-character_ypos = 270
-character_xspeed = 0
-character_yspeed = 0
 state = Enum('state', 'ground, air, hold, death, waiting')
-character_state = state.hold
+
+character = None
+tile = None
 
 
-def character_move(move_type):
-    if (move_type == SDLK_LEFT):
-        move_left(-0.5)
-    elif (move_type == SDLK_RIGHT):
-        move_right(0.5)
-    elif (move_type == SDLK_UP):
-       jump()
-    elif (move_type == SDLK_DOWN):
-        instant_down()
-    pass
 
 
-def move_left(movement):
-    global character_xspeed
-    character_xspeed += movement
-    set_character_state(state.ground)
-    #바라보는 방향 추가
-    pass
+class Character:
+    def __init__(self):
+        self.xpos, self.ypos = 650//2, 270
+        self.frame = 0
+        self.image = load_image('animation_sheet.png')
+        self.direction = 1
+        self.xspeed, self.yspeed = 0, 0
+        self.state = state.hold
+        self.move = False
 
+    def update(self):
+        if(self.move == True):
+            self.frame = (self.frame + 1) % 8
+        self.contact()
+        if(self.state != state.death):
+            self.xpos += self.xspeed
+            self.ypos += self.yspeed
 
-def move_right(movement):
-    global character_xspeed
-    character_xspeed += movement
-    set_character_state(state.ground)
-    # 바라보는 방향 추가
-    pass
+    def draw(self):
+        if (self.state != state.death):
+            self.image.clip_draw(self.frame * 100, self.direction * 100, 100, 100, self.xpos, self.ypos)
 
+    def move_left(self, movement):
+        self.xspeed += movement
+        self.direction = 0
 
-def character_move_calculation(xpos, ypos, xspeed, yspeed, type):
-    xpos += xspeed
-    ypos += yspeed
-    return xpos, ypos
-    pass
+    def move_right(self, movement):
+        self.xspeed += movement
+        self.direction = 1
 
-
-def jump():
-    pass
-
-def instant_down():
-    pass
-
-def contact_character(xpos, ypos, xspeed, yspeed):
-    global tile_information
-    character_xbox = int (((20 + xpos)//40))
-    character_ybox = int (((20 + ypos)//40) - 1)
-
-    if (xspeed>0):
-        predict_character_xbox = int(((40 + xpos + xspeed) // 40))
-    elif (xspeed<0):
-        predict_character_xbox = int(((0 + xpos + xspeed) // 40))
-    else :
-        predict_character_xbox = int(((20 + xpos + xspeed) // 40))
-
-    if (yspeed>0):
-        predict_charactet_ybox = int(((40 + ypos + yspeed) // 40) - 1)
-    elif (yspeed<0):
-        predict_charactet_ybox = int(((0 + ypos + yspeed) // 40) - 1)
-    else :
-        predict_charactet_ybox = int(((20 + ypos + yspeed) // 40) - 1)
-
-    if (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) < 1):
+    def move_jump(self):
         pass
-    elif(abs(character_xbox - predict_character_xbox) != 0):
-        if (tile_information[predict_charactet_ybox][predict_character_xbox] == 2):
-            return state.death
+
+    def move_instant_down(self):
         pass
-    elif (abs(character_ybox - predict_charactet_ybox) != 0):
+
+    def move_keyboard(self, type, key):
+        if (type == SDL_KEYDOWN):
+            if (key == SDLK_LEFT):
+                self.move_left(-0.5)
+            elif (key == SDLK_RIGHT):
+                self.move_right(0.5)
+            elif (key == SDLK_UP):
+                self.move_jump()
+            elif (key == SDLK_DOWN):
+                self. move_instant_down()
+            self.move = True
+        elif (type == SDL_KEYUP):
+            if (key == SDLK_LEFT):
+                self.move_left(0.5)
+            elif (key == SDLK_RIGHT):
+                self.move_right(-0.5)
+            self.move = False
+
         pass
-    pass
 
 
+    def contact(self):
+        global tile
+        character_xbox = int(((20 + self.xpos) // 40))
+        character_ybox = int(((20 + self.ypos) // 40) - 1)
 
-def set_character_state(type):
-    global character_state
-    if (type == state.ground):
-        character_state = state.ground
-    elif (type == state.air):
-        character_state = state.air
-    elif (type == state.hold):
-        character_state = state.hold
-    elif (type == state.death):
-        character_state = state.death
-    elif (type == state.waiting):
-        character_state = state.waiting
+        if (self.xspeed > 0):
+            predict_character_xbox = int(((40 + self.xpos + self.xspeed) // 40))
+        elif (self.xspeed < 0):
+            predict_character_xbox = int(((0 + self.xpos + self.xspeed) // 40))
+        else:
+            predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
+
+        if (self.yspeed > 0):
+            predict_charactet_ybox = int(((40 + self.ypos + self.yspeed) // 40) - 1)
+        elif (self.yspeed < 0):
+            predict_charactet_ybox = int(((0 + self.ypos + self.yspeed) // 40) - 1)
+        else:
+            predict_charactet_ybox = int(((20 + self.ypos + self.yspeed) // 40) - 1)
+
+        if (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) < 1):
+            pass
+        elif (abs(character_xbox - predict_character_xbox) != 0):
+            if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
+                return state.death
+            pass
+        elif (abs(character_ybox - predict_charactet_ybox) != 0):
+            pass
+        pass
+
+    def set_state(self, type):
+        if (type == state.ground):
+            self.state = state.ground
+        elif (type == state.air):
+            self.state = state.air
+        elif (type == state.hold):
+            self.state = state.hold
+        elif (type == state.death):
+            self.state = state.death
+        elif (type == state.waiting):
+            self.state = state.waiting
+
+class Tile:
+    def __init__(self, vertical, horizon):
+        self.y, self.x = vertical, horizon
+        self.type = 0
+        self.size = 40
+        self.image = load_image('tile_kind.png')
+        tile_information = [([(0) for i in range(20)]) for j in range(15)]
+        pass
+
+    def draw(self):
+        self.image.clip_draw(5 + (42 * (self.type % 2)), 4 + ((42 * 4) - (42 * ((self.type + 2) // 2))),
+                            self.size, self.size, 20 + self.x * self.size, 20 + self.y * self.size)
 
 
-def load_stage():           # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
-    global tile_information
-    file = open("save_stage.txt",'r')
+def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
+    global tile
+    file = open("save_stage.txt", 'r')
     for j in range(0, 15, 1):
         line = file.readline()
         for i in range(0, 20, 1):
-            tile_information[j][i] = int(line[i:i+1])
+            tile[j][i].type = int(line[i:i + 1])
     file.close()
 
+def enter():
+    global character, tile
+    character = Character()
+    tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
+    load_stage()
+    pass
+
+
+def exit():
+    global character, tile
+    del(character)
+    del(tile)
+
+
+def pause():
+    pass
+
+
+def resume():
+    pass
+
+
+def update():
+    global character
+    character.update()
+
+
+def draw():
+    clear_canvas()
+
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            tile[j][i].draw()
+    character.draw()
+    update_canvas()
+
+
 def handle_events():
-    global running, move
+    global character
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            running = False
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
-        elif event.key == SDLK_ESCAPE:
-            running = False
+            game_framework.quit()
 #------------------------------------------- 마우스 처리----------------------------------------------------#
 
 # ------------------------------------------- 마우스 처리----------------------------------------------------#
 
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
         elif event.type == SDL_KEYDOWN:
-            if event.key == SDLK_1:      #왼쪽 1번째줄 타일 셋
-                load_stage()
             if (event.key == SDLK_LEFT or event.key == SDLK_RIGHT or event.key == SDLK_UP or event.key == SDLK_DOWN):
-                character_move(event.key)
-                move = True
+                character.move_keyboard(event.type, event.key)
         elif event.type == SDL_KEYUP:
-            if event.key == SDLK_RIGHT:
-                move_right(-0.5)
-                move = False
-            elif event.key == SDLK_LEFT:
-                move_left(0.5)
-                move = False
+            if (event.key == SDLK_LEFT or event.key == SDLK_RIGHT or event.key == SDLK_UP or event.key == SDLK_DOWN):
+                character.move_keyboard(event.type, event.key)
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
 
 
-def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환경 마우스 좌표 값 조정 함수
-    return WINDOW_HEIGHT - 1 - num
 
-
-def draw_scene():
-    global frame, character_xpos, character_ypos, character_state
-    clear_canvas()
-
-    for j in range(0, 15, 1):
-        for i in range(0, 20, 1):
-            tile_kind.clip_draw(5 + (42 * ((tile_information[j][i]) % 2)),4 + ((42*4)-(42 * ((tile_information[j][i]+2)// 2))),
-                                tile_size, tile_size, 20 + i*tile_size, 20 + j * tile_size)
-
-    if(character_state != state.death):
-        character.clip_draw(frame * 100, 0, 100, 100, character_xpos, character_ypos)
-    if move == True:
-        frame = (frame + 1) % 8
-    else:
-        frame = 0
-
-    if (character_state != state.hold):
-        character_xpos, character_ypos = character_move_calculation(character_xpos, character_ypos,
-                                                                character_xspeed, character_yspeed, character_state)
-    character_state = contact_character(character_xpos, character_ypos, character_xspeed, character_yspeed)
-    update_canvas()
-    handle_events()
-
-
-
-while running:
-    draw_scene()
-
-close_canvas()
