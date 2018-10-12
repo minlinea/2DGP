@@ -16,8 +16,8 @@ class Character:
     def __init__(self):
         self.xpos, self.ypos = 650//2, 270
         self.frame = 0
-        self.image = load_image('run_animation.png')
-        self.dir = 1
+        self.image = load_image('animation_sheet.png')
+        self.direction = 1
         self.xspeed, self.yspeed = 0, 0
         self.state = state.hold
         self.move = False
@@ -32,17 +32,15 @@ class Character:
 
     def draw(self):
         if (self.state != state.death):
-            self.image.clip_draw(self.frame * 100, 0, 100, 100, self.xpos, self.ypos)
+            self.image.clip_draw(self.frame * 100, self.direction * 100, 100, 100, self.xpos, self.ypos)
 
     def move_left(self, movement):
         self.xspeed += movement
-        # 바라보는 방향 추가
-        pass
+        self.direction = 0
 
     def move_right(self, movement):
         self.xspeed += movement
-        # 바라보는 방향 추가
-        pass
+        self.direction = 1
 
     def move_jump(self):
         pass
