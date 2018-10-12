@@ -1,5 +1,5 @@
 import game_framework
-import stage_run_practice
+import stage_run
 from pico2d import *
 
 from enum import Enum
