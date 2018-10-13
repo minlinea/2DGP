@@ -23,15 +23,22 @@ class Character:
         self.xspeed, self.yspeed = 0, 0
         self.state = state.hold
         self.move = False
-        self.t = 0
+        self.jumpcount = 0
+
 
     def update(self):
         if(self.move == True):
             self.frame = (self.frame + 1) % 8
         #self.contact()
-        if(self.state != state.death):
+        #if(self.state != state.death):
+        #    self.xpos += self.xspeed
+        #    self.ypos += self.yspeed
+        self.xspeed, self.yspeed = 0, 0
+        if(self.state == state.air):
+            self.cardinal_spline()
             self.xpos += self.xspeed
             self.ypos += self.yspeed
+
 
     def draw(self):
         if (self.state != state.death):
@@ -46,15 +53,17 @@ class Character:
         self.direction = 1
 
     def move_jump(self):
-        self.cardinal_spline()
+        if (self.state == state.air):
+            self.cardinal_spline()
 
     def cardinal_spline(self):
-        if(self.t <= 100):
-            self.xspeed = (4*self.t - 3) * (self.xspeed) + (-8*self.t + 4) * (self.xspeed + 120/50) + (4*self.t - 1) * (self.xspeed + 240/100)
-            self.yspeed = (4*self.t - 3) * (self.yspeed) + (-8*self.t + 4) * (self.yspeed + 120/50) + (4*self.t - 1) * (self.yspeed)
-            self.t = (self.t + 1) % 100
-            #self.x = (2 * self.t ** 2 - 3 * self.t + 1) * p1[0] + (-4 * self.t ** 2 + 4 * t) * p2[0] + (2 * self.t ** 2 - t) * (self.x + 240, self.y)
-            #self.y = (2 * self.t ** 2 - 3 * self.t + 1) * p1[1] + (-4 * self.t ** 2 + 4 * t) * p2[1] + (2 * self.t ** 2 - t) * p3[1]
+        if(self.jumpcount <= 100):
+            self.xspeed = (4*self.jumpcount - 3) * (self.xspeed + 1) + (-8*self.jumpcount + 4) * (self.xspeed) + (4*self.jumpcount - 1) * (self.xspeed - 1)
+            self.yspeed = (4*self.jumpcount - 3) * (self.yspeed + 1) + (-8*self.jumpcount + 4) * (self.yspeed) + (4*self.jumpcount - 1) * (self.yspeed - 1)
+            self.jumpcount = (self.jumpcount + 1) % 100
+            if(self.jumpcount == 0):
+                self.set_state(state.ground)
+                self.xspeed, self. yspeed = 0, 0
 
     def move_instant_down(self):
         pass
@@ -67,6 +76,7 @@ class Character:
                 self.move_right(0.5)
             elif (key == SDLK_UP):
                 self.move_jump()
+                self.set_state(state.air)
             elif (key == SDLK_DOWN):
                 self. move_instant_down()
             self.move = True
