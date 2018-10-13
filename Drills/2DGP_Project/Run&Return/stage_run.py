@@ -1,5 +1,7 @@
 import game_framework
+import title_state
 import stage_run
+
 from pico2d import *
 
 from enum import Enum
@@ -116,7 +118,6 @@ class Tile:
         self.type = 0
         self.size = 40
         self.image = load_image('tile_kind.png')
-        tile_information = [([(0) for i in range(20)]) for j in range(15)]
         pass
 
     def draw(self):
@@ -177,7 +178,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            game_framework.change_state(title_state)
 #------------------------------------------- 마우스 처리----------------------------------------------------#
 
 # ------------------------------------------- 마우스 처리----------------------------------------------------#

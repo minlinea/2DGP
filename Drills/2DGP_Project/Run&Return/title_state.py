@@ -1,6 +1,6 @@
 import game_framework
 import stage_run
-#import stage_editor
+import stage_editor
 from pico2d import *
 
 
@@ -28,8 +28,8 @@ def handle_events():
                 game_framework.quit()
             elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
                 game_framework.change_state(stage_run)
-            #elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
-            #    game_framework.change_state(stage_editor)
+            elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_p):
+                game_framework.change_state(stage_editor)
 
 
 def draw():
