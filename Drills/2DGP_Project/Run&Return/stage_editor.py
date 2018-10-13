@@ -42,23 +42,9 @@ class Tile:
 
 #----------------------------------------게임 오브젝트 클래스--------------------------------------#
 
-
-
-#------------------------------------------함수 선언 부분----------------------------------------#
-
-
-def draw_scene():
-
-    whiteboard.draw(whiteboard.x , whiteboard.y)
-
-
-
-
-#------------------------------------------함수 선언 부분----------------------------------------#
-
-
+#----------------------------------------게임 프레임 워크-------------------------------------------#
 def enter():
-    global tile, tile_kind, tile_choose, whiteboard, imposible_collocate
+    global tile, tile_kind, tile_choose, imposible_collocate
     tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
     tile_kind = Image((120/2), (250/2), 0,0, 120, 250, 'tile_kind.png')
     tile_choose = Image(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
@@ -68,8 +54,11 @@ def enter():
 
 
 def exit():
-    global tile
+    global tile, tile_kind, tile_choose, imposible_collocate
     del(tile)
+    del(tile_kind)
+    del(tile_choose)
+    del(imposible_collocate)
 
 
 def pause():
@@ -95,8 +84,9 @@ def draw():
     tile_choose.clip_draw(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1])
 
     update_canvas()
+#----------------------------------------게임 프레임 워크-------------------------------------------#
 
-
+#----------------------------------------핸들 이벤트---------------------------------------------#
 def handle_events():
     global click
     events = get_events()
@@ -196,3 +186,4 @@ def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하
     file.close()
 
 #-------------------------------------------------키보드 처리관련-------------------------------------------------#
+#----------------------------------------핸들 이벤트---------------------------------------------#
