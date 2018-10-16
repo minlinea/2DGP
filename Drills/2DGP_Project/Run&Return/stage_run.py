@@ -78,15 +78,17 @@ class Character:
                 self. move_instant_down(-0.5)
             self.move = True
         elif (type == SDL_KEYUP):
-            if(self.xspeed != 0):
-                if (key == SDLK_LEFT):
+            if (key == SDLK_LEFT):
+                if (self.xspeed != 0):
                     self.move_left(0.5)
-                elif (key == SDLK_RIGHT):
+            elif (key == SDLK_RIGHT):
+                if (self.xspeed != 0):
                     self.move_right(-0.5)
-            elif (self.yspeed != 0):
-                if (key == SDLK_UP):
+            elif (key == SDLK_UP):
+                if (self.yspeed != 0):
                     self.move_jump(-0.5)
-                elif (key == SDLK_DOWN):
+            elif (key == SDLK_DOWN):
+                if (self.yspeed != 0):
                     self.move_instant_down(0.5)
 
             self.move = False
@@ -125,6 +127,12 @@ class Character:
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.yspeed = 0
             pass
+        elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) ==2):
+            if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
+                self.state = state.death
+            elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
+                self.xspeed, self.yspeed = 0,0
+
         pass
 
     def set_state(self, type):
