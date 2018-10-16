@@ -29,13 +29,8 @@ class Character:
     def update(self):
         if(self.move == True):
             self.frame = (self.frame + 1) % 8
-        #self.contact()
-        #if(self.state != state.death):
-        #    self.xpos += self.xspeed
-        #    self.ypos += self.yspeed
-        self.xspeed, self.yspeed = 0, 0
-        if(self.state == state.air):
-            self.cardinal_spline()
+        self.contact()
+        if(self.state != state.death):
             self.xpos += self.xspeed
             self.ypos += self.yspeed
 
@@ -82,9 +77,11 @@ class Character:
             self.move = True
         elif (type == SDL_KEYUP):
             if (key == SDLK_LEFT):
-                self.move_left(0.5)
+                if(self.xspeed != 0):
+                    self.move_left(0.5)
             elif (key == SDLK_RIGHT):
-                self.move_right(-0.5)
+                if (self.xspeed != 0):
+                    self.move_right(-0.5)
             self.move = False
 
         pass
@@ -98,7 +95,7 @@ class Character:
         if (self.xspeed > 0):
             predict_character_xbox = int(((40 + self.xpos + self.xspeed) // 40))
         elif (self.xspeed < 0):
-            predict_character_xbox = int(((0 + self.xpos + self.xspeed) // 40))
+            predict_character_xbox = int(((0 + self.xpos + self.xspeed) // 40)-1)
         else:
             predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
 
@@ -109,11 +106,11 @@ class Character:
         else:
             predict_charactet_ybox = int(((20 + self.ypos + self.yspeed) // 40) - 1)
 
-        if (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) < 1):
-            pass
-        elif (abs(character_xbox - predict_character_xbox) != 0):
+        if (abs(character_xbox - predict_character_xbox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                return state.death
+                self.state = state.death
+            elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
+                self.xspeed = 0
             pass
         elif (abs(character_ybox - predict_charactet_ybox) != 0):
             pass
@@ -158,7 +155,6 @@ def enter():
     character = Character()
     tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
     load_stage()
-    pass
 
 
 def exit():
@@ -187,6 +183,7 @@ def draw():
         for i in range(0, 20, 1):
             tile[j][i].draw()
     character.draw()
+
     update_canvas()
 
 

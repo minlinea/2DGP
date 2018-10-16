@@ -94,7 +94,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.change_stage(title_state)
+            game_framework.change_state(title_state)
         elif event.type == SDL_MOUSEBUTTONDOWN or (
                 event.type == SDL_MOUSEMOTION and click == True) or event.type == SDL_MOUSEBUTTONUP:
             mouse_xpos, mouse_ypos = event.x, window_to_pico_coordinate_system(event.y)
@@ -149,7 +149,7 @@ def event_KEYDOWN(key):         # 키보드 처리
     elif key == SDLK_0:  # save_stage.txt에 저장된 타일 로드
         load_stage()
     elif key == SDLK_r:  # 모든 타일 빈타일로 초기화
-        clear_stage(0)
+        clear_stage()
 
 
 def save_stage():           # 현재까지 그린 정보 저장
@@ -168,11 +168,11 @@ def save_stage():           # 현재까지 그린 정보 저장
     file.close()
 
 
-def clear_stage(set_tile):          # 타일 초기화, 모든 타일을 빈타일로 만듬
+def clear_stage():          # 타일 초기화, 모든 타일을 빈타일로 만듬
     global tile
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            tile[j][i].type = set_tile
+            tile[j][i].type = 0
 
 
 
