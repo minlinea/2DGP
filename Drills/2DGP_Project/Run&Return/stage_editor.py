@@ -157,9 +157,9 @@ def save_stage():           # 현재까지 그린 정보 저장
     file = open("save_stage.txt",'w')
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
-            if ((j >= 5 and j<=8) and ((i>=0 and i<=2) or (i>=17 and i<=19))):  # 생성 불가능 지역 빈 공간
+            if ((j >= 6 and j<=9) and ((i>=0 and i<=2) or (i>=17 and i<=19))):  # 생성 불가능 지역 빈 공간
                 data = str(0)
-            elif ((j >= 9) and ((i>=0 and i<=2) or (i>=17 and i<=19))):     # 생성 불가능 지역 일반 블록 부분
+            elif ((j <= 5) and ((i>=0 and i<=2) or (i>=17 and i<=19))):     # 생성 불가능 지역 일반 블록 부분
                 data = str(1)
             else:
                 data = str(tile[j][i].type)     # 생성 불가능 지역이 아니면 저장된 정보 저장
