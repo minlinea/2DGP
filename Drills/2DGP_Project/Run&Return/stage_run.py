@@ -47,21 +47,23 @@ class Character:
         self.xspeed += movement
         self.direction = 1
 
-    def move_jump(self):
-        if (self.state == state.air):
-            self.cardinal_spline()
+    def move_jump(self, movement):
+        self.yspeed += movement
+        #if (self.state == state.air):
+        #    self.cardinal_spline()
 
     def cardinal_spline(self):
-        if(self.jumpcount <= 100):
-            self.xspeed = (4*self.jumpcount - 3) * (self.xspeed + 1) + (-8*self.jumpcount + 4) * (self.xspeed) + (4*self.jumpcount - 1) * (self.xspeed - 1)
-            self.yspeed = (4*self.jumpcount - 3) * (self.yspeed + 1) + (-8*self.jumpcount + 4) * (self.yspeed) + (4*self.jumpcount - 1) * (self.yspeed - 1)
-            self.jumpcount = (self.jumpcount + 1) % 100
-            if(self.jumpcount == 0):
-                self.set_state(state.ground)
-                self.xspeed, self. yspeed = 0, 0
-
-    def move_instant_down(self):
         pass
+        #if(self.jumpcount <= 100):
+            #self.xspeed = (4*self.jumpcount - 3) * (self.xspeed + 1) + (-8*self.jumpcount + 4) * (self.xspeed) + (4*self.jumpcount - 1) * (self.xspeed - 1)
+            #self.yspeed = (4*self.jumpcount - 3) * (self.yspeed + 1) + (-8*self.jumpcount + 4) * (self.yspeed) + (4*self.jumpcount - 1) * (self.yspeed - 1)
+            #self.jumpcount = (self.jumpcount + 1) % 100
+            #if(self.jumpcount == 0):
+            #    self.set_state(state.ground)
+            #    self.xspeed, self. yspeed = 0, 0
+
+    def move_instant_down(self, movement):
+        self.yspeed += movement
 
     def move_keyboard(self, type, key):
         if (type == SDL_KEYDOWN):
@@ -70,18 +72,23 @@ class Character:
             elif (key == SDLK_RIGHT):
                 self.move_right(0.5)
             elif (key == SDLK_UP):
-                self.move_jump()
-                self.set_state(state.air)
+                self.move_jump(0.5)
+                #self.set_state(state.air)
             elif (key == SDLK_DOWN):
-                self. move_instant_down()
+                self. move_instant_down(-0.5)
             self.move = True
         elif (type == SDL_KEYUP):
-            if (key == SDLK_LEFT):
-                if(self.xspeed != 0):
+            if(self.xspeed != 0):
+                if (key == SDLK_LEFT):
                     self.move_left(0.5)
-            elif (key == SDLK_RIGHT):
-                if (self.xspeed != 0):
+                elif (key == SDLK_RIGHT):
                     self.move_right(-0.5)
+            elif (self.yspeed != 0):
+                if (key == SDLK_UP):
+                    self.move_jump(-0.5)
+                elif (key == SDLK_DOWN):
+                    self.move_instant_down(0.5)
+
             self.move = False
 
         pass
@@ -100,11 +107,11 @@ class Character:
             predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
 
         if (self.yspeed > 0):
-            predict_charactet_ybox = int(((40 + self.ypos + self.yspeed) // 40) - 1)
+            predict_charactet_ybox = int(((70 + self.ypos + self.yspeed) // 40) - 1)
         elif (self.yspeed < 0):
             predict_charactet_ybox = int(((0 + self.ypos + self.yspeed) // 40) - 1)
         else:
-            predict_charactet_ybox = int(((20 + self.ypos + self.yspeed) // 40) - 1)
+            predict_charactet_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
 
         if (abs(character_xbox - predict_character_xbox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
@@ -113,6 +120,10 @@ class Character:
                 self.xspeed = 0
             pass
         elif (abs(character_ybox - predict_charactet_ybox) != 0):
+            if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
+                self.state = state.death
+            elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
+                self.yspeed = 0
             pass
         pass
 
