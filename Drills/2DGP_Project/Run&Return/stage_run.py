@@ -55,7 +55,7 @@ class Character:
         else:
             self.yspeed = 0
         self.jumpcount = (self.jumpcount + 1) % 243
-        if(self.jumpcount ==0):
+        if(self.jumpcount == 0):
             self.state = state.ground
             self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
 
@@ -158,6 +158,55 @@ class Character:
             self.state = state.death
         elif (type == state.waiting):
             self.state = state.waiting
+
+
+    def state_change(self, type):
+        state = Enum('state', 'ground, air, hold, death')
+        if(self.state == self.ground):
+            if(type == self.air):
+                set.state(state.air)
+                pass
+            elif(type == self.hold):
+                set.state(state.hold)
+                pass
+            elif(type == self.death):
+                set.state(state.death)
+                pass
+            pass
+        elif(self.state == self.air):
+            if(type == self.ground):
+                set.state(state.ground)
+                pass
+            elif(type == self.hold):
+                set.state(state.hold)
+                pass
+            elif(type == self.death):
+                set.state(state.death)
+                pass
+            pass
+        elif(self.state == self.hold):
+            if(type == self.ground):
+                set.state(state.ground)
+                pass
+            elif(type == self.air):
+                set.state(state.air)
+                pass
+            elif(type == self.death):
+                set.state(state.death)
+                pass
+            pass
+        elif(self.state == self.death):
+            if(type == self.ground):
+                set.state(state.ground)
+                pass
+            elif(type == self.air):
+                set.state(state.air)
+                pass
+            elif(type == self.hold):
+                set.state(state.hold)
+                pass
+            pass
+        pass
 
 class Tile:
     def __init__(self, vertical, horizon):
