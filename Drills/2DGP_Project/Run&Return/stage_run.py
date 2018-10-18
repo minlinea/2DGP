@@ -56,8 +56,8 @@ class Character:
             self.yspeed = 0
         self.jumpcount = (self.jumpcount + 1) % 243
         if(self.jumpcount == 0):
-            self.state = state.ground
-            self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
+            if(self.state == state.air):
+                self.state_change(state.ground)
 
     def move_instant_down(self, movement):
         self.yspeed += movement
@@ -119,31 +119,24 @@ class Character:
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.xspeed = 0
                 if (self.state == state.air):
-                    self.ypos = character_ybox * 40 + 30
-                    self.set_state(state.ground)
-                    self.jumpcount = 0
-                    self.yspeed = 0
+                    self.state_change(state.ground)
             pass
         elif (abs(character_ybox - predict_charactet_ybox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
                 self.set_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 if(self.state == state.air):
-                    self.ypos = character_ybox * 40 + 30
-                    self.set_state(state.ground)
-                    self.jumpcount=0
-                    self.yspeed = 0
+                    self.state_change(state.ground)
             pass
         elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) ==2):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
                 self.set_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.xspeed, self.yspeed = 0,0
+                self.xspeed = 0
                 if (self.state == state.air):
-                    self.ypos = character_ybox * 40 + 30
-                    self.set_state(state.ground)
-                    self.jumpcount = 0
-                    self.yspeed = 0
+                    self.state_change(state.ground)
+
 
         pass
 
@@ -161,49 +154,50 @@ class Character:
 
 
     def state_change(self, type):
-        state = Enum('state', 'ground, air, hold, death')
-        if(self.state == self.ground):
-            if(type == self.air):
-                set.state(state.air)
+        if(self.state == state.ground):
+            if(type == state.air):
                 pass
-            elif(type == self.hold):
-                set.state(state.hold)
+            elif(type == state.hold):
+                self.set_state(state.hold)
                 pass
-            elif(type == self.death):
-                set.state(state.death)
+            elif(type == state.death):
+                self.set_state(state.death)
                 pass
             pass
-        elif(self.state == self.air):
-            if(type == self.ground):
-                set.state(state.ground)
+        elif(self.state == state.air):
+            if(type == state.ground):
+                self.set_state(state.ground)
+                self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
+                self.jumpcount = 0
+                self.yspeed = 0
                 pass
-            elif(type == self.hold):
-                set.state(state.hold)
+            elif(type == state.hold):
+                self.set_state(state.hold)
                 pass
-            elif(type == self.death):
-                set.state(state.death)
-                pass
-            pass
-        elif(self.state == self.hold):
-            if(type == self.ground):
-                set.state(state.ground)
-                pass
-            elif(type == self.air):
-                set.state(state.air)
-                pass
-            elif(type == self.death):
-                set.state(state.death)
+            elif(type == state.death):
+                self.set_state(state.death)
                 pass
             pass
-        elif(self.state == self.death):
-            if(type == self.ground):
-                set.state(state.ground)
+        elif(self.state == state.hold):
+            if(type == state.ground):
+                self.set_state(state.ground)
                 pass
-            elif(type == self.air):
-                set.state(state.air)
+            elif(type == state.air):
+                self.set_state(state.air)
                 pass
-            elif(type == self.hold):
-                set.state(state.hold)
+            elif(type == state.death):
+                self.set_state(state.death)
+                pass
+            pass
+        elif(self.state == state.death):
+            if(type == state.ground):
+                self.set_state(state.ground)
+                pass
+            elif(type == state.air):
+                self.set_state(state.air)
+                pass
+            elif(type == state.hold):
+                self.set_state(state.hold)
                 pass
             pass
         pass
