@@ -28,7 +28,7 @@ def draw():
     global pause_image, choose_menu
     clear_canvas()
     pause_image.draw(400,300)
-    choose_menu.clip_draw(613 * choose_menu_pivot_num,0,613,370,(706+91)/2, WINDOW_HEIGHT - (592+223)/2)
+    choose_menu.clip_draw(614 * choose_menu_pivot_num,0,614,370,(706+91)/2, WINDOW_HEIGHT - (592+223)/2)
     update_canvas()
 
 
@@ -43,13 +43,19 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.pop_state()
         elif event.type == SDL_MOUSEMOTION:
-            if(event.x < 593 and event.x > 90):
-                if (window_to_pico_coordinate_system(event.y) < 355):
+            if(event.x < 535 and event.x > 265):
+                if (window_to_pico_coordinate_system(event.y) < 358 and window_to_pico_coordinate_system(event.y) > 264):
                     choose_menu_pivot_num = 1
                 else:
                     choose_menu_pivot_num = 0
+            else:
+                choose_menu_pivot_num = 0
             pass
         elif event.type == SDL_MOUSEBUTTONDOWN:
+            if (event.x < 535 and event.x > 265):
+                if (window_to_pico_coordinate_system(event.y) < 358 and window_to_pico_coordinate_system(
+                    event.y) > 264):
+                    game_framework.pop_state()
             pass
 
 def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환경 마우스 좌표 값 조정 함수
