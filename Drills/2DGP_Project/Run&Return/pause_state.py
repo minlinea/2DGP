@@ -1,5 +1,6 @@
 import game_framework
 import stage_run
+import help_state
 from pico2d import *
 
 WINDOW_HEIGHT = 600
@@ -59,6 +60,8 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if (choose_menu_pivot_num == 1):
                 game_framework.pop_state()
+            elif (choose_menu_pivot_num ==2):
+                game_framework.push_state(help_state)
             elif (choose_menu_pivot_num ==3):
                 game_framework.quit()
             pass
