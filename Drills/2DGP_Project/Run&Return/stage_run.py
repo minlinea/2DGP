@@ -30,6 +30,8 @@ class Character:
         if(self.move == True):
             self.frame = (self.frame + 1) % 8
         self.contact()
+        if(self.state == state.air):
+            self.move_jump()
         if(self.state != state.death):
             self.xpos += self.xspeed
             self.ypos += self.yspeed
@@ -47,23 +49,30 @@ class Character:
         self.xspeed += movement
         self.direction = 1
 
-    def move_jump(self, movement):
-        self.yspeed += movement
+    def move_jump(self):
+        if(self.jumpcount < 3):
+            self.yspeed += self.jumpcount + 1
+        elif(self.jumpcount < 11):
+            self.yspeed += -self.jumpcount + 6
+        self.jumpcount = (self.jumpcount + 1) % 11
+        if(self.jumpcount ==0):
+            self.ypos -= 2
+            self.yspeed = 0
+            self.state = state.ground
         #if (self.state == state.air):
         #    self.cardinal_spline()
-
-    def cardinal_spline(self):
-        pass
-        #if(self.jumpcount <= 100):
-            #self.xspeed = (4*self.jumpcount - 3) * (self.xspeed + 1) + (-8*self.jumpcount + 4) * (self.xspeed) + (4*self.jumpcount - 1) * (self.xspeed - 1)
-            #self.yspeed = (4*self.jumpcount - 3) * (self.yspeed + 1) + (-8*self.jumpcount + 4) * (self.yspeed) + (4*self.jumpcount - 1) * (self.yspeed - 1)
-            #self.jumpcount = (self.jumpcount + 1) % 100
-            #if(self.jumpcount == 0):
-            #    self.set_state(state.ground)
-            #    self.xspeed, self. yspeed = 0, 0
+# a*x**2 + b*x + 1 = y
+    # 36a + 6b = 9
+    # 18a + 6b = 4 18a = -5
+# 속도와 누적운동량의 관계를 파악해 보자. c = 1
+# 0 1 2 3 4 5 6 7  8   9  10 11
+# 1 2 3 3 2 1 0 -1 -2 -3 -4 -3
+# 1 3 6 9 11 12 12 11 9 6 2 -1
+#실제 좌표 변화 1 4 10 19 20 32 44 55 64 73 79 80
 
     def move_instant_down(self, movement):
         self.yspeed += movement
+        pass
 
     def move_keyboard(self, type, key):
         if (type == SDL_KEYDOWN):
@@ -72,7 +81,8 @@ class Character:
             elif (key == SDLK_RIGHT):
                 self.move_right(0.5)
             elif (key == SDLK_UP):
-                self.move_jump(0.5)
+                self.set_state(state.air)
+                self.move_jump()
                 #self.set_state(state.air)
             elif (key == SDLK_DOWN):
                 self. move_instant_down(-0.5)
@@ -85,8 +95,7 @@ class Character:
                 if (self.xspeed != 0):
                     self.move_right(-0.5)
             elif (key == SDLK_UP):
-                if (self.yspeed != 0):
-                    self.move_jump(-0.5)
+                    pass
             elif (key == SDLK_DOWN):
                 if (self.yspeed != 0):
                     self.move_instant_down(0.5)
@@ -94,6 +103,7 @@ class Character:
             self.move = False
 
         pass
+
 
 
     def contact(self):
