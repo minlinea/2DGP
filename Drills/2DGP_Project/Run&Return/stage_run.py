@@ -50,14 +50,12 @@ class Character:
         self.direction = 1
 
     def move_jump(self):
-        if(self.jumpcount < 3):
-            self.yspeed += self.jumpcount + 1
-        elif(self.jumpcount < 11):
-            self.yspeed += -self.jumpcount + 6
-        self.jumpcount = (self.jumpcount + 1) % 11
-        if(self.jumpcount ==0):
-            self.ypos -= 2
+        if(self.jumpcount % 11 == 1):
+            self.yspeed = -((self.jumpcount)//11) + 15
+        else:
             self.yspeed = 0
+        self.jumpcount = (self.jumpcount + 1) % 342
+        if(self.jumpcount ==0):
             self.state = state.ground
         #if (self.state == state.air):
         #    self.cardinal_spline()
@@ -65,8 +63,8 @@ class Character:
     # 36a + 6b = 9
     # 18a + 6b = 4 18a = -5
 # 속도와 누적운동량의 관계를 파악해 보자. c = 1
-# 0 1 2 3 4 5 6 7  8   9  10 11
-# 1 2 3 3 2 1 0 -1 -2 -3 -4 -3
+# 0 1 2 3 4 5  6  7  8  9  10 11 12
+# 5 4 3 2 1 0 -1 -2 -3 -4 -3 -4 -5
 # 1 3 6 9 11 12 12 11 9 6 2 -1
 #실제 좌표 변화 1 4 10 19 20 32 44 55 64 73 79 80
 

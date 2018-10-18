@@ -6,5 +6,5 @@ import stage_run
 # fill here
 
 pico2d.open_canvas()
-game_framework.run(start_state)
+game_framework.run(stage_run)
 pico2d.close_canvas()
