@@ -1,6 +1,7 @@
 import game_framework
 import title_state
 import stage_run
+import pause_state
 
 from pico2d import *
 
@@ -278,6 +279,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             if (event.key == SDLK_LEFT or event.key == SDLK_RIGHT or event.key == SDLK_UP or event.key == SDLK_DOWN):
                 character.move_keyboard(event.type, event.key)
+            if(event.key == SDLK_p):
+                game_framework.push_state(pause_state)
         elif event.type == SDL_KEYUP:
             if (event.key == SDLK_LEFT or event.key == SDLK_RIGHT or event.key == SDLK_UP or event.key == SDLK_DOWN):
                 character.move_keyboard(event.type, event.key)
