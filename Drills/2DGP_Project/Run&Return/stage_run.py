@@ -60,6 +60,8 @@ class Character:
                 self.state_change(state.ground)
 
     def move_instant_down(self):
+        if(self.jumpcount != 0):
+            self.jumpcount = 0
         self.yspeed = -3
 
     def move_keyboard(self, type, key):
