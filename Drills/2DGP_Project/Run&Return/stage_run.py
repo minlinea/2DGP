@@ -30,7 +30,7 @@ class Character:
         if(self.move == True):
             self.frame = (self.frame + 1) % 8
         self.contact()
-        if(self.state == state.air):
+        if(self.jumpcount != 0):
             self.move_jump()
         if(self.state != state.death):
             self.xpos += self.xspeed
@@ -59,9 +59,8 @@ class Character:
             if(self.state == state.air):
                 self.state_change(state.ground)
 
-    def move_instant_down(self, movement):
-        self.yspeed += movement
-        pass
+    def move_instant_down(self):
+        self.yspeed = -3
 
     def move_keyboard(self, type, key):
         if (type == SDL_KEYDOWN):
@@ -73,7 +72,8 @@ class Character:
                 self.set_state(state.air)
                 self.move_jump()
             elif (key == SDLK_DOWN):
-                self. move_instant_down(-0.5)
+                self.set_state(state.air)
+                self.move_instant_down()
             self.move = True
         elif (type == SDL_KEYUP):
             if (key == SDLK_LEFT):
@@ -83,10 +83,9 @@ class Character:
                 if (self.xspeed != 0):
                     self.move_right(-0.5)
             elif (key == SDLK_UP):
-                    pass
+                pass
             elif (key == SDLK_DOWN):
-                if (self.yspeed != 0):
-                    self.move_instant_down(0.5)
+                pass
 
             self.move = False
 
