@@ -46,16 +46,21 @@ def handle_events():
             if(event.x < 535 and event.x > 265):
                 if (window_to_pico_coordinate_system(event.y) < 358 and window_to_pico_coordinate_system(event.y) > 264):
                     choose_menu_pivot_num = 1
+                elif(window_to_pico_coordinate_system(event.y) < 240 and window_to_pico_coordinate_system(event.y) > 150):
+                    choose_menu_pivot_num = 2
+                elif (window_to_pico_coordinate_system(event.y) < 124 and window_to_pico_coordinate_system(
+                        event.y) > 34):
+                    choose_menu_pivot_num = 3
                 else:
                     choose_menu_pivot_num = 0
             else:
                 choose_menu_pivot_num = 0
             pass
         elif event.type == SDL_MOUSEBUTTONDOWN:
-            if (event.x < 535 and event.x > 265):
-                if (window_to_pico_coordinate_system(event.y) < 358 and window_to_pico_coordinate_system(
-                    event.y) > 264):
-                    game_framework.pop_state()
+            if (choose_menu_pivot_num == 1):
+                game_framework.pop_state()
+            elif (choose_menu_pivot_num ==3):
+                game_framework.quit()
             pass
 
 def window_to_pico_coordinate_system(num):      # pico 환경과, 윈도우 환경 마우스 좌표 값 조정 함수
