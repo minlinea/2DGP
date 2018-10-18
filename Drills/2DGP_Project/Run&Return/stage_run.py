@@ -50,23 +50,14 @@ class Character:
         self.direction = 1
 
     def move_jump(self):
-        if(self.jumpcount % 11 == 1):
-            self.yspeed = -((self.jumpcount)//11) + 15
+        if(self.jumpcount % 8 == 1):
+            self.yspeed = -((self.jumpcount)//8) + 15
         else:
             self.yspeed = 0
-        self.jumpcount = (self.jumpcount + 1) % 342
+        self.jumpcount = (self.jumpcount + 1) % 243
         if(self.jumpcount ==0):
             self.state = state.ground
-        #if (self.state == state.air):
-        #    self.cardinal_spline()
-# a*x**2 + b*x + 1 = y
-    # 36a + 6b = 9
-    # 18a + 6b = 4 18a = -5
-# 속도와 누적운동량의 관계를 파악해 보자. c = 1
-# 0 1 2 3 4 5  6  7  8  9  10 11 12
-# 5 4 3 2 1 0 -1 -2 -3 -4 -3 -4 -5
-# 1 3 6 9 11 12 12 11 9 6 2 -1
-#실제 좌표 변화 1 4 10 19 20 32 44 55 64 73 79 80
+            self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
 
     def move_instant_down(self, movement):
         self.yspeed += movement
@@ -81,7 +72,6 @@ class Character:
             elif (key == SDLK_UP):
                 self.set_state(state.air)
                 self.move_jump()
-                #self.set_state(state.air)
             elif (key == SDLK_DOWN):
                 self. move_instant_down(-0.5)
             self.move = True
@@ -110,36 +100,50 @@ class Character:
         character_ybox = int(((20 + self.ypos) // 40) - 1)
 
         if (self.xspeed > 0):
-            predict_character_xbox = int(((40 + self.xpos + self.xspeed) // 40))
+            predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
         elif (self.xspeed < 0):
             predict_character_xbox = int(((0 + self.xpos + self.xspeed) // 40)-1)
         else:
-            predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
+            predict_character_xbox = int(((10 + self.xpos + self.xspeed) // 40))
 
         if (self.yspeed > 0):
-            predict_charactet_ybox = int(((70 + self.ypos + self.yspeed) // 40) - 1)
+            predict_charactet_ybox = int(((55 + self.ypos + self.yspeed) // 40) - 1)
         elif (self.yspeed < 0):
             predict_charactet_ybox = int(((0 + self.ypos + self.yspeed) // 40) - 1)
         else:
-            predict_charactet_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
+            predict_charactet_ybox = int(((15 + self.ypos + self.yspeed) // 40) - 1)
 
         if (abs(character_xbox - predict_character_xbox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                self.state = state.death
+                self.set_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.xspeed = 0
+                if (self.state == state.air):
+                    self.ypos = character_ybox * 40 + 30
+                    self.set_state(state.ground)
+                    self.jumpcount = 0
+                    self.yspeed = 0
             pass
         elif (abs(character_ybox - predict_charactet_ybox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                self.state = state.death
+                self.set_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
-                self.yspeed = 0
+                if(self.state == state.air):
+                    self.ypos = character_ybox * 40 + 30
+                    self.set_state(state.ground)
+                    self.jumpcount=0
+                    self.yspeed = 0
             pass
         elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) ==2):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                self.state = state.death
+                self.set_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.xspeed, self.yspeed = 0,0
+                if (self.state == state.air):
+                    self.ypos = character_ybox * 40 + 30
+                    self.set_state(state.ground)
+                    self.jumpcount = 0
+                    self.yspeed = 0
 
         pass
 
