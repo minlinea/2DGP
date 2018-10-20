@@ -2,6 +2,7 @@ import game_framework
 import title_state
 import stage_run
 import pause_state
+import threading
 
 from pico2d import *
 
@@ -11,7 +12,7 @@ state = Enum('state', 'ground, air, hold, death, waiting')
 
 character = None
 tile = None
-
+time = 300
 
 
 
@@ -113,37 +114,30 @@ class Character:
 
         if (abs(character_xbox - predict_character_xbox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                self.set_state(state.death)
+                self.change_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.xspeed = 0
                 if (self.state == state.air):
                     self.change_state(state.ground)
-            if (tile[predict_charactet_ybox][predict_character_xbox].type == 0):
-                if (self.state == state.ground):
-                    self.change_state(state.air)
-                    self.jumpcount = 127
+            #if (tile[predict_charactet_ybox][predict_character_xbox].type == 0):
+                #if (self.state == state.ground):
+                    #self.change_state(state.air)
+                    #self.jumpcount = 127
             pass
         elif (abs(character_ybox - predict_charactet_ybox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                self.set_state(state.death)
+                self.change_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 if(self.state == state.air):
                     self.change_state(state.ground)
-                elif(self.state == state.ground):
-                    self.change_state(state.air)
-                    self.jumpcount = 127
             pass
         elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) ==2):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
-                self.set_state(state.death)
+                self.change_state(state.death)
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 self.xspeed=0
                 if (self.state == state.air):
                     self.change_state(state.ground)
-                elif (self.state == state.ground):
-                    self.change_state(state.air)
-                    self.jumpcount = 127
-
 
         pass
 
@@ -161,16 +155,17 @@ class Character:
 
 
     def change_state(self, type):
-        if(self.state == state.ground):
+        if(type == state.death):
+            self.set_state(state.death)
+
+        elif(self.state == state.ground):
             if(type == state.air):
                 self.set_state(state.air)
             elif(type == state.hold):
                 self.set_state(state.hold)
                 pass
-            elif(type == state.death):
-                self.set_state(state.death)
-                pass
             pass
+
         elif(self.state == state.air):
             if(type == state.ground):
                 self.set_state(state.ground)
@@ -180,10 +175,8 @@ class Character:
             elif(type == state.hold):
                 self.set_state(state.hold)
                 pass
-            elif(type == state.death):
-                self.set_state(state.death)
-                pass
             pass
+
         elif(self.state == state.hold):
             if(type == state.ground):
                 self.set_state(state.ground)
@@ -191,21 +184,8 @@ class Character:
             elif(type == state.air):
                 self.set_state(state.air)
                 pass
-            elif(type == state.death):
-                self.set_state(state.death)
-                pass
             pass
-        elif(self.state == state.death):
-            if(type == state.ground):
-                self.set_state(state.ground)
-                pass
-            elif(type == state.air):
-                self.set_state(state.air)
-                pass
-            elif(type == state.hold):
-                self.set_state(state.hold)
-                pass
-            pass
+
         pass
 
 class Tile:
@@ -230,17 +210,34 @@ def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하
             tile[j][i].type = int(line[i:i + 1])
     file.close()
 
+def game_timer():
+    global time
+    time -= 1
+    #if(time == 8):
+        #game_framework.change_state(title_state)
+
+    timer = threading.Timer(1, game_timer)
+    timer.start()
+
+if __name__ == '__main__':
+    game_timer()
+
+
+
 def enter():
-    global character, tile
+    global character, tile, time
+    time = 10
     character = Character()
     tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
     load_stage()
+    game_timer()
 
 
 def exit():
     global character, tile
     del(character)
     del(tile)
+
 
 
 def pause():
