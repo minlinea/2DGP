@@ -23,19 +23,18 @@ class Character:
         self.direction = 1
         self.xspeed, self.yspeed = 0, 0
         self.state = state.hold
-        self.move = False
         self.jumpcount = 0
 
 
     def update(self):
-        if(self.move == True):
-            self.frame = (self.frame + 1) % 8
-        self.contact()
         if(self.jumpcount != 0):
             self.move_jump()
-        if(self.state != state.death):
+        if(self.xspeed != 0 or self.yspeed != 0):
             self.xpos += self.xspeed
             self.ypos += self.yspeed
+            self.frame = (self.frame + 1) % 8
+        self.contact()
+
 
 
     def draw(self):
@@ -63,6 +62,7 @@ class Character:
     def move_instant_down(self):
         if(self.jumpcount != 0):
             self.jumpcount = 0
+        self.change_state(state.air)
         self.yspeed = -3
 
     def move_keyboard(self, type, key):
@@ -85,10 +85,6 @@ class Character:
             elif (key == SDLK_RIGHT):
                 if (self.xspeed != 0):
                     self.move_right(-0.5)
-            elif (key == SDLK_UP):
-                pass
-            elif (key == SDLK_DOWN):
-                pass
 
             self.move = False
 
@@ -157,6 +153,7 @@ class Character:
     def change_state(self, type):
         if(self.state == state.ground):
             if(type == state.air):
+                self.set_state(state.air)
                 pass
             elif(type == state.hold):
                 self.set_state(state.hold)
