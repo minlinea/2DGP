@@ -17,12 +17,12 @@ tile = None
 
 class Character:
     def __init__(self):
-        self.xpos, self.ypos = 650//2, 270
+        self.xpos, self.ypos = 150, 270
         self.frame = 0
         self.image = load_image('animation_sheet.png')
         self.direction = 1
         self.xspeed, self.yspeed = 0, 0
-        self.state = state.hold
+        self.state = state.ground
         self.jumpcount = 0
 
 
@@ -118,6 +118,10 @@ class Character:
                 self.xspeed = 0
                 if (self.state == state.air):
                     self.change_state(state.ground)
+            if (tile[predict_charactet_ybox][predict_character_xbox].type == 0):
+                if (self.state == state.ground):
+                    self.change_state(state.air)
+                    self.jumpcount = 127
             pass
         elif (abs(character_ybox - predict_charactet_ybox) != 0):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
@@ -125,6 +129,9 @@ class Character:
             elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
                 if(self.state == state.air):
                     self.change_state(state.ground)
+                elif(self.state == state.ground):
+                    self.change_state(state.air)
+                    self.jumpcount = 127
             pass
         elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) ==2):
             if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
@@ -133,6 +140,9 @@ class Character:
                 self.xspeed=0
                 if (self.state == state.air):
                     self.change_state(state.ground)
+                elif (self.state == state.ground):
+                    self.change_state(state.air)
+                    self.jumpcount = 127
 
 
         pass
@@ -154,7 +164,6 @@ class Character:
         if(self.state == state.ground):
             if(type == state.air):
                 self.set_state(state.air)
-                pass
             elif(type == state.hold):
                 self.set_state(state.hold)
                 pass
@@ -168,7 +177,6 @@ class Character:
                 self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
                 self.jumpcount = 0
                 self.yspeed = 0
-                pass
             elif(type == state.hold):
                 self.set_state(state.hold)
                 pass
