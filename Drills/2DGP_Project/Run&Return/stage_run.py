@@ -125,6 +125,12 @@ class Character:
         elif (abs(character_ybox - predict_character_ybox) != 0):
             if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
+            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
+                if (self.state == state.air):
+                    if(tile[character_ybox - 1][character_xbox].type == 0):
+                        self.y_axiscount = 243 - self.y_axiscount
+                    else:
+                        self.change_state(state.ground)
             elif (tile[character_ybox - 1][character_xbox].type != 0):
                 if(self.state == state.air and self.y_axiscount > 120):
                     self.change_state(state.ground)
@@ -133,7 +139,6 @@ class Character:
             if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
             elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
-                self.xspeed=0
                 if (self.state == state.air):
                     self.change_state(state.ground)
 
