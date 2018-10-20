@@ -24,12 +24,12 @@ class Character:
         self.direction = 1
         self.xspeed, self.yspeed = 0, 0
         self.state = state.ground
-        self.jumpcount = 0
+        self.y_axiscount = 0
 
 
     def update(self):
-        if(self.jumpcount != 0):
-            self.move_jump()
+        if(self.y_axiscount != 0):
+            self.move_y_axis()
         if(self.xspeed != 0 or self.yspeed != 0):
             self.xpos += self.xspeed
             self.ypos += self.yspeed
@@ -50,21 +50,19 @@ class Character:
         self.xspeed += movement
         self.direction = 1
 
-    def move_jump(self):
-        if(self.jumpcount % 8 == 1):
-            self.yspeed = -((self.jumpcount)//8) + 15
+    def move_y_axis(self):
+        if(self.y_axiscount % 8 == 1):
+            self.yspeed = -((self.y_axiscount)//8) + 15
         else:
             self.yspeed = 0
-        self.jumpcount = (self.jumpcount + 1) % 243
-        if(self.jumpcount == 0):
+        self.y_axiscount = (self.y_axiscount + 1) % 243
+        if(self.y_axiscount == 0):
             if(self.state != state.ground):
-                self.jumpcount = 234
+                self.y_axiscount = 234
 
     def move_instant_down(self):
-        if(self.jumpcount != 0):
-            self.jumpcount = 0
         self.change_state(state.air)
-        self.yspeed = -3
+        self.y_axiscount = 234
 
     def move_keyboard(self, type, key):
         if (type == SDL_KEYDOWN):
@@ -74,7 +72,7 @@ class Character:
                 self.move_right(0.5)
             elif (key == SDLK_UP):
                 self.change_state(state.air)
-                self.move_jump()
+                self.move_y_axis()
             elif (key == SDLK_DOWN):
                 self.change_state(state.air)
                 self.move_instant_down()
@@ -122,13 +120,13 @@ class Character:
             if (tile[character_ybox - 1][character_xbox].type == 0):
                 if (self.state == state.ground):
                     self.change_state(state.air)
-                    self.jumpcount = 127
+                    self.y_axiscount = 127
             pass
         elif (abs(character_ybox - predict_character_ybox) != 0):
             if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
             elif (tile[character_ybox - 1][character_xbox].type != 0):
-                if(self.state == state.air):
+                if(self.state == state.air and self.y_axiscount > 120):
                     self.change_state(state.ground)
             pass
         elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_character_ybox) ==2):
@@ -170,7 +168,7 @@ class Character:
             if(type == state.ground):
                 self.set_state(state.ground)
                 self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
-                self.jumpcount = 0
+                self.y_axiscount = 0
                 self.yspeed = 0
             elif(type == state.hold):
                 self.set_state(state.hold)
