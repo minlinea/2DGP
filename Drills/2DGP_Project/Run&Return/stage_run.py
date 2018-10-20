@@ -106,35 +106,35 @@ class Character:
             predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
 
         if (self.yspeed > 0):
-            predict_charactet_ybox = int(((60 + self.ypos + self.yspeed) // 40) - 1)
+            predict_character_ybox = int(((60 + self.ypos + self.yspeed) // 40) - 1)
         elif (self.yspeed < 0):
-            predict_charactet_ybox = int(((0 + self.ypos + self.yspeed) // 40) - 1)
+            predict_character_ybox = int(((0 + self.ypos + self.yspeed) // 40) - 1)
         else:
-            predict_charactet_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
+            predict_character_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
 
         if (abs(character_xbox - predict_character_xbox) != 0):
-            if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
+            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
-            elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
+            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
                 self.xspeed = 0
                 if (self.state == state.air):
                     self.change_state(state.ground)
-            #if (tile[predict_charactet_ybox][predict_character_xbox].type == 0):
-                #if (self.state == state.ground):
-                    #self.change_state(state.air)
-                    #self.jumpcount = 127
+            if (tile[character_ybox - 1][character_xbox].type == 0):
+                if (self.state == state.ground):
+                    self.change_state(state.air)
+                    self.jumpcount = 127
             pass
-        elif (abs(character_ybox - predict_charactet_ybox) != 0):
-            if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
+        elif (abs(character_ybox - predict_character_ybox) != 0):
+            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
-            elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
+            elif (tile[character_ybox - 1][character_xbox].type != 0):
                 if(self.state == state.air):
                     self.change_state(state.ground)
             pass
-        elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_charactet_ybox) ==2):
-            if (tile[predict_charactet_ybox][predict_character_xbox].type == 2):
+        elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_character_ybox) ==2):
+            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
-            elif (tile[predict_charactet_ybox][predict_character_xbox].type != 0):
+            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
                 self.xspeed=0
                 if (self.state == state.air):
                     self.change_state(state.ground)
