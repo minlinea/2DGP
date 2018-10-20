@@ -57,8 +57,8 @@ class Character:
             self.yspeed = 0
         self.jumpcount = (self.jumpcount + 1) % 243
         if(self.jumpcount == 0):
-            if(self.state == state.air):
-                self.change_state(state.ground)
+            if(self.state != state.ground):
+                self.jumpcount = 234
 
     def move_instant_down(self):
         if(self.jumpcount != 0):
