@@ -13,7 +13,7 @@ state = Enum('state', 'ground, air, hold, death, waiting')
 character = None
 tile = None
 time = 300
-
+stage_count = 0
 
 
 class Character:
@@ -111,7 +111,10 @@ class Character:
         else:
             predict_character_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
 
-        if(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
+        if (predict_character_xbox >= 20):
+            load_stage()
+            self.xpos = 500
+        elif(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
             self.change_state(state.death)
 
         elif (abs(character_xbox - predict_character_xbox) != 0):
@@ -210,12 +213,18 @@ class Tile:
 
 
 def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
-    global tile
+    global tile, stage_count
     file = open("save_stage.txt", 'r')
+    for load_temp in range(0, 15 * stage_count, 1):
+        line = file.readline()
     for j in range(0, 15, 1):
         line = file.readline()
         for i in range(0, 20, 1):
             tile[j][i].type = int(line[i:i + 1])
+
+    line = file.readline()
+    if line:
+        stage_count += 1
     file.close()
 
 def game_timer():
