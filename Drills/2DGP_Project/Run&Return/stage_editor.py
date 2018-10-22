@@ -182,8 +182,10 @@ def clear_stage():          # 타일 초기화, 모든 타일을 빈타일로 �
 
 
 def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하여 정보 저장
-    global tile
+    global tile, load_count
     file = open("save_stage.txt", 'r')
+    for load_temp in range(0, 15 * load_count, 1):
+        line = file.readline()
     for j in range(0, 15, 1):
         line = file.readline()
         for i in range(0, 20, 1):
