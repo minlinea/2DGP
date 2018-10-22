@@ -11,7 +11,8 @@ WINDOW_WIDTH, WINDOW_HEIGHT = 800, 600
 
 tile_choose_place = [(33,214),(87,214), (33,155),(87,155) , (33,96),(87,96),(33,35),(87,35)]
 tile_choose_num = 0
-
+save_count = 0
+load_count = 0
 click = False
 
 #----------------------------------------게임 오브젝트 클래스--------------------------------------#
@@ -153,8 +154,11 @@ def event_KEYDOWN(key):         # 키보드 처리
 
 
 def save_stage():           # 현재까지 그린 정보 저장
-    global tile
-    file = open("save_stage.txt",'w')
+    global tile, save_count
+    if(save_count>0):
+        file = open("save_stage.txt",'a')
+    else:
+        file = open("save_stage.txt", 'w')
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             if ((j >= 6 and j<=9) and ((i>=0 and i<=2) or (i>=17 and i<=19))):  # 생성 불가능 지역 빈 공간
@@ -166,10 +170,11 @@ def save_stage():           # 현재까지 그린 정보 저장
             file.write(data)
         file.write("\n")
     file.close()
+    save_count += 1
 
 
 def clear_stage():          # 타일 초기화, 모든 타일을 빈타일로 만듬
-    global tile
+    global tile, save_count, load_count
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             tile[j][i].type = 0
@@ -184,6 +189,7 @@ def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하
         for i in range(0, 20, 1):
             tile[j][i].type = int(line[i:i + 1])
     file.close()
+    load_count += 1
 
 #-------------------------------------------------키보드 처리관련-------------------------------------------------#
 #----------------------------------------핸들 이벤트---------------------------------------------#
