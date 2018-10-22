@@ -30,11 +30,12 @@ class Character:
     def update(self):
         if(self.y_axiscount != 0):
             self.move_y_axis()
+        self.contact()
         if(self.xspeed != 0 or self.yspeed != 0):
             self.xpos += self.xspeed
             self.ypos += self.yspeed
             self.frame = (self.frame + 1) % 8
-        self.contact()
+
 
 
 
@@ -110,13 +111,16 @@ class Character:
         else:
             predict_character_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
 
-        if (abs(character_xbox - predict_character_xbox) != 0):
+        if(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
+            self.change_state(state.death)
+
+        elif (abs(character_xbox - predict_character_xbox) != 0):
             if (tile[predict_character_ybox][predict_character_xbox].type == 2):
                 self.change_state(state.death)
-            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
+            elif (tile[predict_character_ybox][predict_character_xbox].type != 0
+            or tile[predict_character_ybox+1][predict_character_xbox].type != 0): #진행 방향 박스가 빈 박스가 아닌 경우
                 self.xspeed = 0
-                if (self.state == state.air):
-                    self.change_state(state.ground)
+
             if (tile[character_ybox - 1][character_xbox].type == 0):
                 if (self.state == state.ground):
                     self.change_state(state.air)
@@ -129,6 +133,7 @@ class Character:
                 if (self.state == state.air):
                     if(tile[character_ybox - 1][character_xbox].type == 0):
                         self.y_axiscount = 243 - self.y_axiscount
+                        self.y_pos = predict_character_ybox * 40 - 30
                     else:
                         self.change_state(state.ground)
             elif (tile[character_ybox - 1][character_xbox].type != 0):
