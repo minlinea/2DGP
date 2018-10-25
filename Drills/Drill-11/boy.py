@@ -32,12 +32,8 @@ class DashState:
                 boy.velocity -= 3
                 boy.dir = -1
 
-        elif event == DASH_UP:
-            if (boy.velocity > 0):
-                boy.velocity -= 3
-            else:
-                boy.velocity += 3
-        boy.timer = 100
+
+        boy.timer = 200
 
 
 
@@ -56,7 +52,7 @@ class DashState:
 
     @staticmethod
     def draw(boy):
-        if boy.velocity == 1:
+        if boy.dir > 0:
             boy.image.clip_draw(boy.frame * 100, 100, 100, 100, boy.x, boy.y)
         else:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
@@ -75,7 +71,7 @@ class SleepState:
         boy.frame = (boy.frame+1) % 8
 
     def draw(boy):
-        if boy.dir == 1:
+        if boy.dir > 0:
             boy.image.clip_composite_draw(boy.frame * 100, 300, 100, 100, 3.141592 / 2, '', boy.x - 25,
                                                 boy.y - 25, 100, 100)
         else: boy.image.clip_composite_draw(
@@ -89,13 +85,17 @@ class IdleState:
     @staticmethod
     def enter(boy, event):
         if event == RIGHT_DOWN:
-            boy.velocity += 1
+            boy.velocity = 0
+            boy.dir = 1
         elif event == LEFT_DOWN:
-            boy.velocity -= 1
+            boy.velocity = 0
+            boy.dir = -1
         elif event == RIGHT_UP:
-            boy.velocity -= 1
+            boy.velocity = 0
+            boy.dir = 1
         elif event == LEFT_UP:
-            boy.velocity += 1
+            boy.velocity = 0
+            boy.dir = -1
         boy.timer = 1000
 
     @staticmethod
@@ -114,7 +114,7 @@ class IdleState:
 
     @staticmethod
     def draw(boy):
-        if boy.dir == 1:
+        if boy.dir > 0:
             boy.image.clip_draw(boy.frame * 100, 300, 100, 100, boy.x, boy.y)
         else:
             boy.image.clip_draw(boy.frame * 100, 200, 100, 100, boy.x, boy.y)
@@ -132,6 +132,16 @@ class RunState:
             boy.velocity -= 1
         elif event == LEFT_UP:
             boy.velocity += 1
+        elif event == DASH_UP:
+            if(boy.velocity > 0):
+                boy.velocity = 1
+            else :
+                boy.velocity = -1
+        elif event == DASH_TIMER:
+            if(boy.velocity > 0):
+                boy.velocity = 1
+            else :
+                boy.velocity = -1
         boy.dir = boy.velocity
 
     @staticmethod
@@ -149,7 +159,7 @@ class RunState:
 
     @staticmethod
     def draw(boy):
-        if boy.velocity == 1:
+        if boy.dir > 0:
             boy.image.clip_draw(boy.frame * 100, 100, 100, 100, boy.x, boy.y)
         else:
             boy.image.clip_draw(boy.frame * 100, 0, 100, 100, boy.x, boy.y)
@@ -161,10 +171,11 @@ class RunState:
 
 next_state_table = {
     IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState,
-                SLEEP_TIMER: SleepState, SPACE: IdleState},
+                SLEEP_TIMER: SleepState, SPACE: IdleState, DASH_DOWN:IdleState, DASH_UP:IdleState, DASH_TIMER:IdleState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
                SPACE: RunState, DASH_UP:RunState,  DASH_DOWN:DashState},
-    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState},
+    SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState,
+                 DASH_DOWN: SleepState, DASH_UP: SleepState, DASH_TIMER: SleepState},
     DashState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
                SPACE: RunState, DASH_DOWN:DashState, DASH_UP:RunState, DASH_TIMER:RunState}
 }
