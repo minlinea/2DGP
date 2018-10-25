@@ -166,9 +166,6 @@ class RunState:
 
 
 
-
-
-
 next_state_table = {
     IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState,
                 SLEEP_TIMER: SleepState, SPACE: IdleState, DASH_DOWN:IdleState, DASH_UP:IdleState, DASH_TIMER:IdleState},
