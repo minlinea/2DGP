@@ -4,7 +4,7 @@ from ball import Ball
 import game_world
 
 # Boy Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, LDASH_DOWN, RDASH_DOWN, LDASH_UP, RDASH_UP, DASH_TIMER= range(11)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE, DASH_DOWN, DASH_UP, DASH_TIMER= range(9)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -12,10 +12,10 @@ key_event_table = {
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
     (SDL_KEYDOWN, SDLK_SPACE): SPACE,
-    (SDL_KEYDOWN, SDLK_LSHIFT): LDASH_DOWN,
-    (SDL_KEYDOWN, SDLK_RSHIFT): RDASH_DOWN,
-    (SDL_KEYUP, SDLK_LSHIFT): LDASH_UP,
-    (SDL_KEYUP, SDLK_RSHIFT): RDASH_UP
+    (SDL_KEYDOWN, SDLK_LSHIFT): DASH_DOWN,
+    (SDL_KEYDOWN, SDLK_RSHIFT): DASH_DOWN,
+    (SDL_KEYUP, SDLK_LSHIFT): DASH_UP,
+    (SDL_KEYUP, SDLK_RSHIFT): DASH_UP
 }
 
 
@@ -24,15 +24,22 @@ key_event_table = {
 class DashState:
     @staticmethod
     def enter(boy, event):
-        if event == RIGHT_DOWN:
-            boy.velocity += 1
-        elif event == LEFT_DOWN:
-            boy.velocity -= 1
-        elif event == RIGHT_UP:
-            boy.velocity -= 1
-        elif event == LEFT_UP:
-            boy.velocity += 1
-        boy.dir = boy.velocity
+        if event == DASH_DOWN:
+            if(boy.velocity > 0):
+                boy.velocity += 3
+                boy.dir = 1
+            else:
+                boy.velocity -= 3
+                boy.dir = -1
+
+        elif event == DASH_UP:
+            if (boy.velocity > 0):
+                boy.velocity -= 3
+            else:
+                boy.velocity += 3
+        boy.timer = 100
+
+
 
     @staticmethod
     def exit(boy, event):
@@ -44,6 +51,8 @@ class DashState:
         boy.timer -= 1
         boy.x += boy.velocity
         boy.x = clamp(25, boy.x, 1600 - 25)
+        if boy.timer ==0:
+            boy.add_event(DASH_TIMER)
 
     @staticmethod
     def draw(boy):
@@ -154,10 +163,10 @@ next_state_table = {
     IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState,
                 SLEEP_TIMER: SleepState, SPACE: IdleState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
-               SPACE: RunState, LDASH_UP:RunState, RDASH_UP:RunState, LDASH_DOWN:DashState, RDASH_DOWN:DashState},
+               SPACE: RunState, DASH_UP:RunState,  DASH_DOWN:DashState},
     SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState},
     DashState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState,
-               SPACE: RunState, LDASH_UP:RunState, RDASH_UP:RunState, DASH_TIMER:RunState}
+               SPACE: RunState, DASH_DOWN:DashState, DASH_UP:RunState, DASH_TIMER:RunState}
 }
 
 class Boy:
