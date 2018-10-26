@@ -1,14 +1,12 @@
 import game_framework
-import threading
 import tile
 
 from pico2d import *
 from enum import Enum
-from tile import Tile
+
 state = Enum('state', 'ground, air, hold, death, waiting')
 
 character = None
-tile = None
 time = 300
 
 class Character:

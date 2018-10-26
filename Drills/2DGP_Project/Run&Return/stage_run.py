@@ -1,12 +1,18 @@
 import game_framework
+import game_world
 import title_state
 import pause_state
-
-from character import Character
-from tile import Tile
 from pico2d import *
 
 
+
+from character import Character
+from tile import Tile
+
+name = "StageRun"
+
+character =None
+tile =None
 stage_count = 0
 
 
@@ -30,17 +36,15 @@ def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하
 
 
 def enter():
-    global character, tile, time
-    time = 10
+    global character, tile
     character = Character()
     tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
     load_stage()
+    game_world.add_object(character, 0)
 
 
 def exit():
-    global character, tile
-    del(character)
-    del(tile)
+    game_world.clear()
 
 
 
@@ -53,17 +57,18 @@ def resume():
 
 
 def update():
-    global character
-    character.update()
+
+    for game_object in game_world.all_objects():
+        game_object.update()
 
 
 def draw():
     clear_canvas()
-
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             tile[j][i].draw()
-    character.draw()
+    for game_object in game_world.all_objects():
+        game_object.draw()
 
     update_canvas()
 
