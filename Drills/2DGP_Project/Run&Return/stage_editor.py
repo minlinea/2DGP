@@ -34,7 +34,7 @@ class Tile:
         self.y, self.x = vertical, horizon
         self.type = 0
         self.size = 40
-        self.image = load_image('tile_kind.png')
+        self.image = load_image('resource\\tile\\tile_kind.png')
         pass
 
     def draw(self):
@@ -47,10 +47,10 @@ class Tile:
 def enter():
     global tile, tile_kind, tile_choose, imposible_collocate
     tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
-    tile_kind = Image((120/2), (250/2), 0,0, 120, 250, 'tile_kind.png')
     tile_choose = Image(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
-                    0,0, 53+1, 61+1, 'tile_choose.png')
-    imposible_collocate = Image((120/2), (400/2), 0, 0, 120, 400, 'imposible_collocate.png')
+                    0,0, 53+1, 61+1, 'resource\\tile\\tile_choose.png')
+    tile_kind = Image((120 / 2), (250 / 2), 0, 0, 120, 250, 'resource\\tile\\tile_kind.png')
+    imposible_collocate = Image((120/2), (400/2), 0, 0, 120, 400, 'resource\\tile\imposible_collocate.png')
     pass
 
 

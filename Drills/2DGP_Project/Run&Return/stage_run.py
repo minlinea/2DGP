@@ -20,7 +20,7 @@ class Character:
     def __init__(self):
         self.xpos, self.ypos = 150, 270
         self.frame = 0
-        self.image = load_image('animation_sheet.png')
+        self.image = load_image('resource\\character\\animation_sheet.png')
         self.direction = 1
         self.xspeed, self.yspeed = 0, 0
         self.state = state.ground
@@ -204,7 +204,7 @@ class Tile:
         self.y, self.x = vertical, horizon
         self.type = 0
         self.size = 40
-        self.image = load_image('tile_kind.png')
+        self.image = load_image('resource\\tile\\tile_kind.png')
         pass
 
     def draw(self):

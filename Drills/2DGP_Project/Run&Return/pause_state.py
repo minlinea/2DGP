@@ -10,8 +10,8 @@ choose_menu_pivot_num = 0
 
 def enter():
     global pause_image, choose_menu
-    pause_image = load_image('pause.png')
-    choose_menu = load_image('pause_choose_menu.png')
+    pause_image = load_image('resource\pause_state\pause.png')
+    choose_menu = load_image('resource\pause_state\pause_choose_menu.png')
 
 
 
