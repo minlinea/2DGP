@@ -6,5 +6,5 @@ import stage_editor
 # fill here
 
 pico2d.open_canvas()
-game_framework.run(stage_editor)
+game_framework.run(stage_run)
 pico2d.close_canvas()
