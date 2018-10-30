@@ -34,6 +34,7 @@ class Ghost:
         self.x_velocity = 0.0
         self.y_velocity = 0.0
         self.frame = 0
+        self.rx, self.ry = x,y +100
         self.degree = dir * 3.141592 / 2
         self.opacify = 0.01
         self.wakeup = False
@@ -43,27 +44,33 @@ class Ghost:
         if self.wakeup is False :
             self.opacify +=  game_framework.frame_time / 4.0
             self.degree = self.degree + game_framework.frame_time * -self.dir * 3.141592 / 2 / 3.9
-            #self.y_velocity += self.degree
-            #self.y += self.y_velocity
+
             if self.opacify >= 1:
                 self.opacify = 1
                 self.wakeup = True
         else:
-            if random.randint(0,1) == 0 or self.opacify == 1:
-                self.opacify -= 0.01;
-            elif random.randint(0,1) == 1 or self.opacify == 0:
-                self.opacify += 0.01;
+            temp = random.randint(0,1)
+            if temp == 0 or self.opacify == 1:
+                self.opacify -= 0.05;
+            elif temp == 1 or self.opacify == 0:
+                self.opacify += 0.05;
+
+            self.degree += 360.0 * game_framework.frame_time / 0.5
+            self.x_velocity = 100 * math.cos(self.degree * 3.14 / 180)
+            self.y_velocity = 100 * math.sin(self.degree * 3.14 / 180)
+            self.x = self.rx + self.x_velocity
+            self.y = self.ry + self.y_velocity
 
 
     def draw(self):
         self.image.opacify(self.opacify)
         if(self.wakeup is False):
             if self.dir == 1:
-                self.image.clip_composite_draw(int(self.frame) * 100, 300, 100, 100, self.degree, '', self.x - 25, self.y - 25,
+                self.image.clip_composite_draw(int(self.frame) * 100, 300, 100, 100, self.degree, '', self.x, self.y + 100,
                                           100, 100)
             else:
-                self.image.clip_composite_draw(int(self.frame) * 100, 200, 100, 100, self.degree, '', self.x + 25,
-                                           self.y - 25, 100, 100)
+                self.image.clip_composite_draw(int(self.frame) * 100, 200, 100, 100, self.degree, '', self.x,
+                                           self.y +100, 100, 100)
         else:
             pass
             if self.dir == 1:
