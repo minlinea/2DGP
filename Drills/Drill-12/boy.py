@@ -1,6 +1,7 @@
 import game_framework
 from pico2d import *
 from ball import Ball
+from ghost import Ghost
 
 import game_world
 
@@ -158,6 +159,11 @@ class Boy:
     def fire_ball(self):
         ball = Ball(self.x, self.y, self.dir*3)
         game_world.add_object(ball, 1)
+
+
+    def poltergeist(self):
+        ghost = Ghost(self.x, self.y)
+        game_world.add_object(ghost, 1)
 
 
     def add_event(self, event):
