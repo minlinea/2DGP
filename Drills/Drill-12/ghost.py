@@ -35,8 +35,9 @@ class Ghost:
 
     def update(self):
         if self.wakeup is False :
-            self.opacify += self.opacify * game_framework.frame_time
-            if self.opacify > 1:
+            self.opacify +=  game_framework.frame_time / 4.0
+            self.degree = self.degree + game_framework.frame_time * -self.dir * 3.141592 / 2 / 3.9
+            if self.opacify >= 1:
                 self.wakeup = True
         else:
             pass
