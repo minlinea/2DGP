@@ -9,7 +9,6 @@ import game_world
 from boy import Boy
 from grass import Grass
 
-
 name = "MainState"
 
 boy = None

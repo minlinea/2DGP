@@ -58,7 +58,7 @@ class IdleState:
     def do(boy):
         boy.frame = (boy.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         temp = get_time()
-        if get_time() - boy.timer >= 10:
+        if get_time() - boy.timer >= 1:
             boy.add_event(SLEEP_TIMER)
 
     @staticmethod
@@ -67,6 +67,7 @@ class IdleState:
             boy.image.clip_draw(int(boy.frame) * 100, 300, 100, 100, boy.x, boy.y)
         else:
             boy.image.clip_draw(int(boy.frame) * 100, 200, 100, 100, boy.x, boy.y)
+
 
 
 class RunState:
@@ -130,6 +131,8 @@ class SleepState:
 
 
 
+
+
 next_state_table = {
     IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SLEEP_TIMER: SleepState, SPACE: IdleState},
     RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: RunState},
@@ -177,4 +180,3 @@ class Boy:
         if (event.type, event.key) in key_event_table:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
-
