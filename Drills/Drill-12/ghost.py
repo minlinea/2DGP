@@ -28,17 +28,25 @@ class Ghost:
         self.dir = dir
         self.velocity = 0
         self.frame = 0
-
+        self.degree = dir * 3.141592 / 2
+        self.wakeup = True
 
 
     def update(self):
-        pass
+        if self.wakeup is False :
+            pass
+            #self.degree = dir * 3.141592 / 2 * game_framework.frame_time
+            if self.degree is 0:
+                self.wakeup = True
+
+        else:
+            pass
 
     def draw(self):
         self.image.opacify(0.5)
         if self.dir == 1:
-            self.image.clip_composite_draw(int(self.frame) * 100, 300, 100, 100, 3.141592 / 2, '', self.x - 25, self.y - 25 + 100,
+            self.image.clip_composite_draw(int(self.frame) * 100, 300, 100, 100, self.degree, '', self.x - 25, self.y - 25 + 100,
                                           100, 100)
         else:
-            self.image.clip_composite_draw(int(self.frame) * 100, 200, 100, 100, -3.141592 / 2, '', self.x + 25,
+            self.image.clip_composite_draw(int(self.frame) * 100, 200, 100, 100, self.degree, '', self.x + 25,
                                            self.y - 25 + 100, 100, 100)
