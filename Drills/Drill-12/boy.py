@@ -19,7 +19,7 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
 
-
+ghost = None
 
 # Boy Event
 RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SLEEP_TIMER, SPACE = range(6)
@@ -110,11 +110,13 @@ class SleepState:
 
     @staticmethod
     def enter(boy, event):
+        boy.poltergeist()
         boy.frame = 0
 
     @staticmethod
     def exit(boy, event):
-        pass
+        global ghost
+        game_world.remove_object(ghost)
 
     @staticmethod
     def do(boy):
@@ -162,8 +164,10 @@ class Boy:
 
 
     def poltergeist(self):
-        ghost = Ghost(self.x, self.y)
+        global ghost
+        ghost = Ghost(self.x, self.y, self.dir)
         game_world.add_object(ghost, 1)
+
 
 
     def add_event(self, event):

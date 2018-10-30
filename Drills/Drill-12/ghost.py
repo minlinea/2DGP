@@ -21,17 +21,24 @@ FRAMES_PER_ACTION = 8
 
 class Ghost:
     image = None
-    def __init__(self, x, y):
+    def __init__(self, x, y, dir):
         self.x, self.y = x, y
         if Ghost.image == None:
             self.image = load_image('animation_sheet.png')
-        self.dir = 1
+        self.dir = dir
         self.velocity = 0
         self.frame = 0
+
 
 
     def update(self):
         pass
 
     def draw(self):
-        pass
+        self.image.opacify(0.5)
+        if self.dir == 1:
+            self.image.clip_composite_draw(int(self.frame) * 100, 300, 100, 100, 3.141592 / 2, '', self.x - 25, self.y - 25 + 100,
+                                          100, 100)
+        else:
+            self.image.clip_composite_draw(int(self.frame) * 100, 200, 100, 100, -3.141592 / 2, '', self.x + 25,
+                                           self.y - 25 + 100, 100, 100)
