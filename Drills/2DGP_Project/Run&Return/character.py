@@ -47,7 +47,7 @@ class Ground:
         elif event == LEFT_UP:
             character.xspeed += RUN_SPEED_PPS
 
-        character.dir = clamp(-1, character.xspeed, 1)
+        character.direction = clamp(0, character.xspeed, 1)
         character.y_axiscount=0
         pass
 
@@ -57,13 +57,13 @@ class Ground:
 
     @staticmethod
     def do(character):
-        #character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         character.xpos += character.xspeed * game_framework.frame_time
         character.xpos = clamp(25, character.xpos, 1600 - 25)
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(int(character.frame * 100), character.direction * 100, 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw(int(character.frame) * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
         pass
 
 
