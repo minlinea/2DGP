@@ -39,6 +39,9 @@ def enter():
     global character, tile
     character = Character()
     tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
+    for j in range(0, 15, 1):
+        for i in range(0, 20, 1):
+            game_world.add_object(tile[j][i], 0)
     load_stage()
     game_world.add_object(character, 0)
 
@@ -64,9 +67,7 @@ def update():
 
 def draw():
     clear_canvas()
-    for j in range(0, 15, 1):
-        for i in range(0, 20, 1):
-            tile[j][i].draw()
+
     for game_object in game_world.all_objects():
         game_object.draw()
 
