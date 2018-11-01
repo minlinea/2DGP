@@ -24,6 +24,7 @@ key_event_table = {
 
 class Ground:
     def enter(character, event):
+        character.y_axiscount = 0
         pass
 
     @staticmethod
@@ -36,6 +37,7 @@ class Ground:
 
     @staticmethod
     def draw(character):
+        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
         pass
 
 
@@ -53,7 +55,10 @@ class Air:
 
     @staticmethod
     def draw(character):
+        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
         pass
+
+
 
 class Hold:
     def enter(character, event):
@@ -69,6 +74,7 @@ class Hold:
 
     @staticmethod
     def draw(character):
+        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
         pass
 
 class Death:
@@ -85,15 +91,16 @@ class Death:
 
     @staticmethod
     def draw(character):
+        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
         pass
 
 
 
 
 next_state_table = {
-    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_DOWN: Ground, LEFT_DOWN: Ground, INSTANT_DOWN: Ground, INSTANT_DOWN: Ground},
-    Air: {RIGHT_UP: Ground, LEFT_UP: Ground, LEFT_DOWN: Ground, RIGHT_DOWN: Ground, INSTANT_DOWN: Ground},
-    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, INSTANT_DOWN: Ground}
+    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_DOWN: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground},
+    Air: {RIGHT_UP: Air, LEFT_UP: Air, LEFT_DOWN: Air, RIGHT_DOWN: Air, INSTANT_DOWN: Air},
+    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, INSTANT_DOWN: Ground}
 }
 
 
@@ -125,7 +132,8 @@ class Character:
 
 
     def draw(self):
-        self.image.clip_draw(self.frame * 100, self.direction * 100, 100, 100, self.xpos, self.ypos)
+        self.cur_state.draw(self)
+
 
     def move_left(self, movement):
         self.xspeed += movement
@@ -141,8 +149,8 @@ class Character:
         else:
             self.yspeed = 0
         self.y_axiscount = (self.y_axiscount + 1) % 243
-        #if(self.y_axiscount == 0):
-                #self.y_axiscount = 234
+        if(self.y_axiscount == 0):
+            self.y_axiscount = 234
 
     def move_instant_down(self):
         self.y_axiscount = 234
