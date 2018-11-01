@@ -4,8 +4,22 @@ import tile
 from pico2d import *
 
 
+# Boy Run Speed
+# fill expressions correctly
+PIXEL_PER_METER = (10.0 / 0.3) # 10pixel 30cm
+RUN_SPEED_KMPH = 20.0 #km / hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Boy Action Speed
+# fill expressions correctly
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 8
+
+
 character = None
-time = 300
 
 # Character Event
 RIGHT_DOWN, RIGHT_UP, LEFT_DOWN, LEFT_UP, JUMP, INSTANT_DOWN = range(6)
@@ -24,7 +38,17 @@ key_event_table = {
 
 class Ground:
     def enter(character, event):
-        character.y_axiscount = 0
+        if event == RIGHT_DOWN:
+            character.xspeed += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            character.xspeed -=  RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            character.xspeed -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            character.xspeed += RUN_SPEED_PPS
+
+        character.dir = clamp(-1, character.xspeed, 1)
+        character.y_axiscount=0
         pass
 
     @staticmethod
@@ -33,11 +57,13 @@ class Ground:
 
     @staticmethod
     def do(character):
-        pass
+        #character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        character.xpos += character.xspeed * game_framework.frame_time
+        character.xpos = clamp(25, character.xpos, 1600 - 25)
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw(int(character.frame * 100), character.direction * 100, 100, 100, character.xpos, character.ypos)
         pass
 
 
@@ -98,8 +124,8 @@ class Death:
 
 
 next_state_table = {
-    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_DOWN: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground},
-    Air: {RIGHT_UP: Air, LEFT_UP: Air, LEFT_DOWN: Air, RIGHT_DOWN: Air, INSTANT_DOWN: Air},
+    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground},
+    Air: {RIGHT_DOWN: Air, RIGHT_UP: Air, LEFT_UP: Air, LEFT_DOWN: Air, JUMP: Air, INSTANT_DOWN: Air},
     Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, INSTANT_DOWN: Ground}
 }
 
@@ -120,13 +146,12 @@ class Character:
 
 
     def update(self):
-        if(self.y_axiscount != 0):
-            self.move_y_axis()
-        #self.contact()
-        if(self.xspeed != 0 or self.yspeed != 0):
-            self.xpos += self.xspeed
-            self.ypos += self.yspeed
-            self.frame = (self.frame + 1) % 8
+        self.cur_state.do(self)
+        if len(self.event_que) > 0:
+            event = self.event_que.pop()
+            self.cur_state.exit(self, event)
+            self.cur_state = next_state_table[self.cur_state][event]
+            self.cur_state.enter(self, event)
 
 
 
@@ -134,14 +159,6 @@ class Character:
     def draw(self):
         self.cur_state.draw(self)
 
-
-    def move_left(self, movement):
-        self.xspeed += movement
-        self.direction = 0
-
-    def move_right(self, movement):
-        self.xspeed += movement
-        self.direction = 1
 
     def move_y_axis(self):
         if(self.y_axiscount % 8 == 1):
@@ -157,22 +174,12 @@ class Character:
 
     def move_keyboard(self, type, key):
         if (type == SDL_KEYDOWN):
-            if (key == SDLK_LEFT):
-                self.move_left(-0.5)
-            elif (key == SDLK_RIGHT):
-                self.move_right(0.5)
-            elif (key == SDLK_UP):
+            if (key == SDLK_UP):
                 self.move_y_axis()
             elif (key == SDLK_DOWN):
                 self.move_instant_down()
             self.move = True
         elif (type == SDL_KEYUP):
-            if (key == SDLK_LEFT):
-                if (self.xspeed != 0):
-                    self.move_left(0.5)
-            elif (key == SDLK_RIGHT):
-                if (self.xspeed != 0):
-                    self.move_right(-0.5)
 
             self.move = False
 
@@ -240,3 +247,11 @@ class Character:
 #                    self.change_state(state.ground)
 
         pass
+
+    def add_event(self, event):
+        self.event_que.insert(0, event)
+
+    def handle_event(self, event):
+        if (event.type, event.key) in key_event_table:
+            key_event = key_event_table[(event.type, event.key)]
+            self.add_event(key_event)
