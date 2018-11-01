@@ -2,12 +2,102 @@ import game_framework
 import tile
 
 from pico2d import *
-from enum import Enum
 
-state = Enum('state', 'ground, air, hold, death, waiting')
 
 character = None
 time = 300
+
+# Character Event
+RIGHT_DOWN, RIGHT_UP, LEFT_DOWN, LEFT_UP, JUMP, INSTANT_DOWN = range(6)
+
+key_event_table = {
+    (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
+    (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
+    (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
+    (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
+    (SDL_KEYDOWN, SDLK_UP): JUMP,
+    (SDL_KEYDOWN, SDLK_UP): INSTANT_DOWN,
+}
+
+
+#state
+
+class Ground:
+    def enter(character, event):
+        pass
+
+    @staticmethod
+    def exit(character, event):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+    @staticmethod
+    def draw(character):
+        pass
+
+
+class Air:
+    def enter(character, event):
+        pass
+
+    @staticmethod
+    def exit(character, event):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+    @staticmethod
+    def draw(character):
+        pass
+
+class Hold:
+    def enter(character, event):
+        pass
+
+    @staticmethod
+    def exit(character, event):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+    @staticmethod
+    def draw(character):
+        pass
+
+class Death:
+    def enter(character, event):
+        pass
+
+    @staticmethod
+    def exit(character, event):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+    @staticmethod
+    def draw(character):
+        pass
+
+
+
+
+next_state_table = {
+    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_DOWN: Ground, LEFT_DOWN: Ground, INSTANT_DOWN: Ground, INSTANT_DOWN: Ground},
+    Air: {RIGHT_UP: Ground, LEFT_UP: Ground, LEFT_DOWN: Ground, RIGHT_DOWN: Ground, INSTANT_DOWN: Ground},
+    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, INSTANT_DOWN: Ground}
+}
+
+
+
 
 class Character:
     def __init__(self):
@@ -16,8 +106,10 @@ class Character:
         self.image = load_image('resource\\character\\animation_sheet.png')
         self.direction = 1
         self.xspeed, self.yspeed = 0, 0
-        self.state = state.ground
         self.y_axiscount = 0
+        self.event_que = []
+        self.cur_state = Ground
+        self.cur_state.enter(self, None)
 
 
     def update(self):
@@ -33,8 +125,7 @@ class Character:
 
 
     def draw(self):
-        if (self.state != state.death):
-            self.image.clip_draw(self.frame * 100, self.direction * 100, 100, 100, self.xpos, self.ypos)
+        self.image.clip_draw(self.frame * 100, self.direction * 100, 100, 100, self.xpos, self.ypos)
 
     def move_left(self, movement):
         self.xspeed += movement
@@ -50,12 +141,10 @@ class Character:
         else:
             self.yspeed = 0
         self.y_axiscount = (self.y_axiscount + 1) % 243
-        if(self.y_axiscount == 0):
-            if(self.state != state.ground):
-                self.y_axiscount = 234
+        #if(self.y_axiscount == 0):
+                #self.y_axiscount = 234
 
     def move_instant_down(self):
-        self.change_state(state.air)
         self.y_axiscount = 234
 
     def move_keyboard(self, type, key):
@@ -65,10 +154,8 @@ class Character:
             elif (key == SDLK_RIGHT):
                 self.move_right(0.5)
             elif (key == SDLK_UP):
-                self.change_state(state.air)
                 self.move_y_axis()
             elif (key == SDLK_DOWN):
-                self.change_state(state.air)
                 self.move_instant_down()
             self.move = True
         elif (type == SDL_KEYUP):
@@ -86,6 +173,7 @@ class Character:
 
 
     def contact(self):
+        pass
         global tile
         character_xbox = int(((20 + self.xpos) // 40))
         character_ybox = int(((20 + self.ypos) // 40) - 1)
@@ -106,88 +194,41 @@ class Character:
 
         #if (predict_character_xbox >= 20):
             #stage_run.load_stage()
-            self.xpos = 500
-        if(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
-            self.change_state(state.death)
+#            self.xpos = 500
+#        if(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
+#            self.change_state(state.death)
 
-        elif (abs(character_xbox - predict_character_xbox) != 0):
-            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
-                self.change_state(state.death)
-            elif (tile[predict_character_ybox][predict_character_xbox].type != 0
-            or tile[predict_character_ybox+1][predict_character_xbox].type != 0): #진행 방향 박스가 빈 박스가 아닌 경우
-                self.xspeed = 0
-
-            if (tile[character_ybox - 1][character_xbox].type == 0):
-                if (self.state == state.ground):
-                    self.change_state(state.air)
-                    self.y_axiscount = 127
-            pass
-        elif (abs(character_ybox - predict_character_ybox) != 0):
-            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
-                self.change_state(state.death)
-            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
-                if (self.state == state.air):
-                    if(tile[character_ybox - 1][character_xbox].type == 0):
-                        self.y_axiscount = 243 - self.y_axiscount
-                        self.y_pos = predict_character_ybox * 40 - 30
-                    else:
-                        self.change_state(state.ground)
-            elif (tile[character_ybox - 1][character_xbox].type != 0):
-                if(self.state == state.air and self.y_axiscount > 120):
-                    self.change_state(state.ground)
-            pass
-        elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_character_ybox) ==2):
-            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
-                self.change_state(state.death)
-            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
-                if (self.state == state.air):
-                    self.change_state(state.ground)
-
-        pass
-
-    def set_state(self, type):
-        if (type == state.ground):
-            self.state = state.ground
-        elif (type == state.air):
-            self.state = state.air
-        elif (type == state.hold):
-            self.state = state.hold
-        elif (type == state.death):
-            self.state = state.death
-        elif (type == state.waiting):
-            self.state = state.waiting
-
-
-    def change_state(self, type):
-        if(type == state.death):
-            self.set_state(state.death)
-
-        elif(self.state == state.ground):
-            if(type == state.air):
-                self.set_state(state.air)
-            elif(type == state.hold):
-                self.set_state(state.hold)
-                pass
-            pass
-
-        elif(self.state == state.air):
-            if(type == state.ground):
-                self.set_state(state.ground)
-                self.ypos = int(((20 + self.ypos) // 40) - 1) * 40 + 30
-                self.y_axiscount = 0
-                self.yspeed = 0
-            elif(type == state.hold):
-                self.set_state(state.hold)
-                pass
-            pass
-
-        elif(self.state == state.hold):
-            if(type == state.ground):
-                self.set_state(state.ground)
-                pass
-            elif(type == state.air):
-                self.set_state(state.air)
-                pass
-            pass
+#        elif (abs(character_xbox - predict_character_xbox) != 0):
+#            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
+#                self.change_state(state.death)
+#            elif (tile[predict_character_ybox][predict_character_xbox].type != 0
+#            or tile[predict_character_ybox+1][predict_character_xbox].type != 0): #진행 방향 박스가 빈 박스가 아닌 경우
+#                self.xspeed = 0
+#
+#            if (tile[character_ybox - 1][character_xbox].type == 0):
+#                if (self.state == state.ground):
+#                    self.change_state(state.air)
+#                    self.y_axiscount = 127
+#            pass
+#        elif (abs(character_ybox - predict_character_ybox) != 0):
+#            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
+#                self.change_state(state.death)
+#            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
+#                if (self.state == state.air):
+#                    if(tile[character_ybox - 1][character_xbox].type == 0):
+#                        self.y_axiscount = 243 - self.y_axiscount
+#                        self.y_pos = predict_character_ybox * 40 - 30
+#                    else:
+#                        self.change_state(state.ground)
+#            elif (tile[character_ybox - 1][character_xbox].type != 0):
+#                if(self.state == state.air and self.y_axiscount > 120):
+#                    self.change_state(state.ground)
+#            pass
+#        elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_character_ybox) ==2):
+#            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
+#               self.change_state(state.death)
+#           elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
+#                if (self.state == state.air):
+#                    self.change_state(state.ground)
 
         pass
