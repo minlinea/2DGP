@@ -62,13 +62,14 @@ class Ground:
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         character.xpos += character.xspeed * game_framework.frame_time
         character.xpos = clamp(25, character.xpos, 1600 - 25)
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(int(character.frame) * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw(int(character.frame * 40), character.direction * 0, 40, 80, character.xpos,
+                                  character.ypos)
         pass
 
 
@@ -89,7 +90,7 @@ class Air:
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         if(character.y_axiscount % 8 == 1):
             character.yspeed = -((character.y_axiscount)//8) + 15
             character.y_axiscount += 1
@@ -104,7 +105,8 @@ class Air:
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw((int(character.frame) * 100), (character.direction * 100), 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw(int(character.frame * 40), character.direction * 0, 40, 80, character.xpos,
+                                  character.ypos)
         pass
 
 
@@ -123,7 +125,8 @@ class Hold:
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw(int(character.frame * 40), character.direction * 0, 40, 80, character.xpos,
+                                  character.ypos)
         pass
 
 class Death:
@@ -141,7 +144,7 @@ class Death:
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw(int(character.frame) * 100, character.direction * 100, 40, 80, character.xpos, character.ypos)
         pass
 
 
@@ -158,9 +161,9 @@ next_state_table = {
 
 class Character:
     def __init__(self):
-        self.xpos, self.ypos = 150, 270
+        self.xpos, self.ypos = 150, 280
         self.frame = 0
-        self.image = load_image('resource\\character\\animation_sheet.png')
+        self.image = load_image('resource\\character\\animation_sheet_demo.png')
         self.direction = 1
         self.xspeed, self.yspeed = 0, 0
         self.y_axiscount = 0
