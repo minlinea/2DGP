@@ -30,7 +30,7 @@ key_event_table = {
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
     (SDL_KEYDOWN, SDLK_UP): JUMP,
-    (SDL_KEYDOWN, SDLK_UP): INSTANT_DOWN,
+    (SDL_KEYDOWN, SDLK_DOWN): INSTANT_DOWN,
 }
 
 
@@ -40,14 +40,18 @@ class Ground:
     def enter(character, event):
         if event == RIGHT_DOWN:
             character.xspeed += RUN_SPEED_PPS
+            character.direction = 1
         elif event == LEFT_DOWN:
             character.xspeed -=  RUN_SPEED_PPS
+            character.direction = 0
         elif event == RIGHT_UP:
             character.xspeed -= RUN_SPEED_PPS
+            character.direction = 1
         elif event == LEFT_UP:
             character.xspeed += RUN_SPEED_PPS
+            character.direction = 0
 
-        character.direction = clamp(0, character.xspeed, 1)
+
         character.y_axiscount=0
         pass
 
@@ -68,20 +72,38 @@ class Ground:
 
 
 class Air:
+
+    @staticmethod
     def enter(character, event):
+        if event == JUMP:
+            character.y_axiscount = 1
+            pass
         pass
 
     @staticmethod
     def exit(character, event):
+        character.yspeed = 0
+        character.y_axiscount =0
         pass
 
     @staticmethod
     def do(character):
+        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        if(character.y_axiscount % 8 == 1):
+            character.yspeed = -((character.y_axiscount)//8) + 15
+            character.y_axiscount += 1
+        else:
+            character.yspeed = 0
+            character.y_axiscount = (character.y_axiscount + 1) % 243
+        if(character.y_axiscount == 0):
+            character.add_event(LEFT_DOWN)
+
+        character.ypos += character.yspeed #* game_framework.frame_time
         pass
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(character.frame * 100, character.direction * 100, 100, 100, character.xpos, character.ypos)
+        character.image.clip_draw((int(character.frame) * 100), (character.direction * 100), 100, 100, character.xpos, character.ypos)
         pass
 
 
@@ -113,6 +135,7 @@ class Death:
 
     @staticmethod
     def do(character):
+        character.contact()
         pass
 
     @staticmethod
@@ -125,7 +148,7 @@ class Death:
 
 next_state_table = {
     Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground},
-    Air: {RIGHT_DOWN: Air, RIGHT_UP: Air, LEFT_UP: Air, LEFT_DOWN: Air, JUMP: Air, INSTANT_DOWN: Air},
+    Air: {RIGHT_DOWN: Ground, RIGHT_UP: Ground, LEFT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Air},
     Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, INSTANT_DOWN: Ground}
 }
 
@@ -160,14 +183,6 @@ class Character:
         self.cur_state.draw(self)
 
 
-    def move_y_axis(self):
-        if(self.y_axiscount % 8 == 1):
-            self.yspeed = -((self.y_axiscount)//8) + 15
-        else:
-            self.yspeed = 0
-        self.y_axiscount = (self.y_axiscount + 1) % 243
-        if(self.y_axiscount == 0):
-            self.y_axiscount = 234
 
     def move_instant_down(self):
         self.y_axiscount = 234
@@ -207,9 +222,7 @@ class Character:
         else:
             predict_character_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
 
-        #if (predict_character_xbox >= 20):
-            #stage_run.load_stage()
-#            self.xpos = 500
+
 #        if(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
 #            self.change_state(state.death)
 

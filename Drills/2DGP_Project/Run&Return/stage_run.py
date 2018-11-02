@@ -63,6 +63,9 @@ def update():
 
     for game_object in game_world.all_objects():
         game_object.update()
+    if(character.xpos >= 750):
+        load_stage()
+        character.xpos = 700
 
 
 def draw():
