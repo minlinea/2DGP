@@ -16,7 +16,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 # fill expressions correctly
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 8
+FRAMES_PER_ACTION = 4
 
 
 character = None
@@ -37,6 +37,7 @@ key_event_table = {
 #state
 
 class Ground:
+    @staticmethod
     def enter(character, event):
         if event == RIGHT_DOWN:
             character.xspeed += RUN_SPEED_PPS
@@ -64,7 +65,7 @@ class Ground:
     def do(character):
         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         character.xpos += character.xspeed * game_framework.frame_time
-        character.xpos = clamp(25, character.xpos, 1600 - 25)
+        character.xpos = clamp(25, character.xpos, 800 - 20)
         if(character.xspeed ==0):
             character.add_event(WAIT)
 
@@ -116,7 +117,8 @@ class Air:
         character.ypos += character.yspeed #* game_framework.frame_time
 
         character.xpos += character.xspeed * game_framework.frame_time
-        character.xpos = clamp(25, character.xpos, 1600 - 25)
+        character.xpos = clamp(25, character.xpos, 800 - 20)
+        character.ypos = clamp(0, character.ypos, 600 - 40)
         pass
 
     @staticmethod

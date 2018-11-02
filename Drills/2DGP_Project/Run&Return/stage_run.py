@@ -38,7 +38,7 @@ def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하
 def enter():
     global character, tile
     character = Character()
-    tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
+    tile = [([(Tile(j,i,'run')) for i in range(20)]) for j in range(15)]
     for j in range(0, 15, 1):
         for i in range(0, 20, 1):
             game_world.add_object(tile[j][i], 0)

@@ -2,6 +2,9 @@ import game_framework
 import title_state
 from pico2d import *
 
+
+from tile import Tile
+
 tile = None
 tile_kind = None
 tile_choose = None
@@ -29,24 +32,13 @@ class Image:
     def clip_draw(self, x, y):
         self.image.clip_draw(self.left,self.bottom,self.width, self.height,x,y)
 
-class Tile:
-    def __init__(self, vertical, horizon):
-        self.y, self.x = vertical, horizon
-        self.type = 0
-        self.size = 40
-        self.image = load_image('resource\\tile\\tile_kind.png')
-        pass
-
-    def draw(self):
-        self.image.clip_draw(5 + (42 * (self.type % 2)), 4 + ((42 * 4) - (42 * ((self.type + 2) // 2))),
-                            self.size, self.size, 20 + self.x * self.size, 20 + self.y * self.size)
 
 #----------------------------------------게임 오브젝트 클래스--------------------------------------#
 
 #----------------------------------------게임 프레임 워크-------------------------------------------#
 def enter():
     global tile, tile_kind, tile_choose, imposible_collocate
-    tile = [([(Tile(j,i)) for i in range(20)]) for j in range(15)]
+    tile = [([(Tile(j,i,'editor')) for i in range(20)]) for j in range(15)]
     tile_choose = Image(tile_choose_place[tile_choose_num][0], tile_choose_place[tile_choose_num][1],
                     0,0, 53+1, 61+1, 'resource\\tile\\tile_choose.png')
     tile_kind = Image((120 / 2), (250 / 2), 0, 0, 120, 250, 'resource\\tile\\tile_kind.png')
