@@ -22,7 +22,7 @@ FRAMES_PER_ACTION = 8
 character = None
 
 # Character Event
-RIGHT_DOWN, RIGHT_UP, LEFT_DOWN, LEFT_UP, JUMP, INSTANT_DOWN, Landing = range(7)
+RIGHT_DOWN, RIGHT_UP, LEFT_DOWN, LEFT_UP, JUMP, INSTANT_DOWN, WAIT, LANDING = range(8)
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
@@ -50,7 +50,7 @@ class Ground:
         elif event == LEFT_UP:
             character.xspeed += RUN_SPEED_PPS
             character.direction = 0
-        elif event == Landing:
+        elif event == LANDING:
             character.yspeed = 0
             character.y_axiscount = 0
 
@@ -65,6 +65,8 @@ class Ground:
         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
         character.xpos += character.xspeed * game_framework.frame_time
         character.xpos = clamp(25, character.xpos, 1600 - 25)
+        if(character.xspeed ==0):
+            character.add_event(WAIT)
 
     @staticmethod
     def draw(character):
@@ -98,7 +100,7 @@ class Air:
             character.yspeed = 0
             character.y_axiscount = (character.y_axiscount + 1) % 243
         if(character.y_axiscount == 0):
-            character.add_event(Landing)
+            character.add_event(LANDING)
 
         character.ypos += character.yspeed #* game_framework.frame_time
         pass
@@ -113,6 +115,8 @@ class Air:
 
 class Hold:
     def enter(character, event):
+        if event == WAIT:
+            pass
         pass
 
     @staticmethod
@@ -121,6 +125,8 @@ class Hold:
 
     @staticmethod
     def do(character):
+        #character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+        character.frame = 0
         pass
 
     @staticmethod
@@ -151,9 +157,9 @@ class Death:
 
 
 next_state_table = {
-    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground, Landing : Ground},
-    Air: {RIGHT_DOWN: Ground, RIGHT_UP: Ground, LEFT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Air, Landing : Ground},
-    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, INSTANT_DOWN: Ground}
+    Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground, LANDING : Ground, WAIT : Hold},
+    Air: {RIGHT_DOWN: Ground, RIGHT_UP: Ground, LEFT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Air, LANDING : Ground},
+    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, JUMP: Air, INSTANT_DOWN: Ground}
 }
 
 
