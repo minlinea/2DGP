@@ -99,8 +99,6 @@ class Air:
 
     @staticmethod
     def exit(character, event):
-        character.yspeed = 0
-        character.y_axiscount =0
         pass
 
     @staticmethod
@@ -174,7 +172,7 @@ class Death:
 
 next_state_table = {
     Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground, LANDING : Ground, WAIT : Hold},
-    Air: {RIGHT_DOWN: Ground, RIGHT_UP: Ground, LEFT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Air, LANDING : Ground},
+    Air: {RIGHT_DOWN: Air, RIGHT_UP: Air, LEFT_UP: Air, LEFT_DOWN: Air, JUMP: Air, INSTANT_DOWN: Air, LANDING : Ground},
     Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, JUMP: Air, INSTANT_DOWN: Ground}
 }
 
