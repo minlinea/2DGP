@@ -81,7 +81,20 @@ class Air:
     def enter(character, event):
         if event == JUMP:
             character.y_axiscount = 1
-            pass
+        elif event == RIGHT_DOWN:
+            character.xspeed += RUN_SPEED_PPS
+            character.direction = 1
+        elif event == LEFT_DOWN:
+            character.xspeed -= RUN_SPEED_PPS
+            character.direction = 0
+        elif event == RIGHT_UP:
+            character.xspeed -= RUN_SPEED_PPS
+            character.direction = 1
+        elif event == LEFT_UP:
+            character.xspeed += RUN_SPEED_PPS
+            character.direction = 0
+        elif event == INSTANT_DOWN:
+            character.y_axiscount = 121
         pass
 
     @staticmethod
@@ -103,6 +116,9 @@ class Air:
             character.add_event(LANDING)
 
         character.ypos += character.yspeed #* game_framework.frame_time
+
+        character.xpos += character.xspeed * game_framework.frame_time
+        character.xpos = clamp(25, character.xpos, 1600 - 25)
         pass
 
     @staticmethod
