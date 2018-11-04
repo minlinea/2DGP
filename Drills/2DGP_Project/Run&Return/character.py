@@ -105,12 +105,12 @@ class Air:
     @staticmethod
     def do(character):
         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
-        if(character.y_axiscount % 8 == 1):
-            character.yspeed = -((character.y_axiscount)//8) + 15
+        if(character.y_axiscount % 6 == 1):
+            character.yspeed = -((character.y_axiscount)//6) + 15
             character.y_axiscount += 1
         else:
             character.yspeed = 0
-            character.y_axiscount = (character.y_axiscount + 1) % 243
+            character.y_axiscount = (character.y_axiscount + 1) % 183
         if(character.y_axiscount == 0):
             character.add_event(LANDING)
 
@@ -130,9 +130,11 @@ class Air:
 
 
 class Hold:
+    @staticmethod
     def enter(character, event):
         if event == WAIT:
             pass
+        character.xspeed =0
         pass
 
     @staticmethod
@@ -213,81 +215,9 @@ class Character:
     def move_instant_down(self):
         self.y_axiscount = 234
 
-    def move_keyboard(self, type, key):
-        if (type == SDL_KEYDOWN):
-            if (key == SDLK_UP):
-                self.move_y_axis()
-            elif (key == SDLK_DOWN):
-                self.move_instant_down()
-            self.move = True
-        elif (type == SDL_KEYUP):
-
-            self.move = False
-
-        pass
 
     def get_bb(self):
         return self.xpos - 20, self.ypos - 40, self.xpos + 20, self.ypos+40
-
-
-    def contact(self):
-        pass
-        global tile
-        character_xbox = int(((20 + self.xpos) // 40))
-        character_ybox = int(((20 + self.ypos) // 40) - 1)
-
-        if (self.xspeed > 0):
-            predict_character_xbox = int(((30 + self.xpos + self.xspeed) // 40))
-        elif (self.xspeed < 0):
-            predict_character_xbox = int(((10 + self.xpos + self.xspeed) // 40)-1)
-        else:
-            predict_character_xbox = int(((20 + self.xpos + self.xspeed) // 40))
-
-        if (self.yspeed > 0):
-            predict_character_ybox = int(((60 + self.ypos + self.yspeed) // 40) - 1)
-        elif (self.yspeed < 0):
-            predict_character_ybox = int(((0 + self.ypos + self.yspeed) // 40) - 1)
-        else:
-            predict_character_ybox = int(((30 + self.ypos + self.yspeed) // 40) - 1)
-
-
-#        if(predict_character_ybox >= 15 or predict_character_ybox <= -1 or predict_character_xbox >=20 or predict_character_xbox <= -1):
-#            self.change_state(state.death)
-
-#        elif (abs(character_xbox - predict_character_xbox) != 0):
-#            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
-#                self.change_state(state.death)
-#            elif (tile[predict_character_ybox][predict_character_xbox].type != 0
-#            or tile[predict_character_ybox+1][predict_character_xbox].type != 0): #진행 방향 박스가 빈 박스가 아닌 경우
-#                self.xspeed = 0
-#
-#            if (tile[character_ybox - 1][character_xbox].type == 0):
-#                if (self.state == state.ground):
-#                    self.change_state(state.air)
-#                    self.y_axiscount = 127
-#            pass
-#        elif (abs(character_ybox - predict_character_ybox) != 0):
-#            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
-#                self.change_state(state.death)
-#            elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
-#                if (self.state == state.air):
-#                    if(tile[character_ybox - 1][character_xbox].type == 0):
-#                        self.y_axiscount = 243 - self.y_axiscount
-#                        self.y_pos = predict_character_ybox * 40 - 30
-#                    else:
-#                        self.change_state(state.ground)
-#            elif (tile[character_ybox - 1][character_xbox].type != 0):
-#                if(self.state == state.air and self.y_axiscount > 120):
-#                    self.change_state(state.ground)
-#            pass
-#        elif (abs(character_xbox - predict_character_xbox) + abs(character_ybox - predict_character_ybox) ==2):
-#            if (tile[predict_character_ybox][predict_character_xbox].type == 2):
-#               self.change_state(state.death)
-#           elif (tile[predict_character_ybox][predict_character_xbox].type != 0):
-#                if (self.state == state.air):
-#                    self.change_state(state.ground)
-
-        pass
 
     def add_event(self, event):
         self.event_que.insert(0, event)

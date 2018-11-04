@@ -36,7 +36,8 @@ def load_stage():  # 'save_stage'에 저장되어 있는 타일 파일 로드하
 
 
 def enter():
-    global character, tile
+    global character, tile, stage_count
+    stage_count = 0
     character = Character()
     tile = [([(Tile(j,i,'run')) for i in range(20)]) for j in range(15)]
     for j in range(0, 15, 1):
@@ -65,8 +66,8 @@ def update():
         game_object.update()
     for i in range(15):
         for tiles in tile:
-            if(collide(character, tiles[i])):
-                tiles[i].type = 2
+            if (collide(character, tiles[i])):
+                tiles[i].type = 1
 
     if(character.xpos >= 750):
         load_stage()
