@@ -48,7 +48,7 @@ def enter():
 
 def exit():
     global tile, tile_kind, tile_choose, imposible_collocate
-    del(tile)
+    #del(tile)
     del(tile_kind)
     del(tile_choose)
     del(imposible_collocate)

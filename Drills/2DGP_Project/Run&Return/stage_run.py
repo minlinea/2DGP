@@ -40,14 +40,14 @@ def enter():
     character = Character()
     tile = [([(Tile(j,i,'run')) for i in range(20)]) for j in range(15)]
     for j in range(0, 15, 1):
-        for i in range(0, 20, 1):
-            game_world.add_object(tile[j][i], 0)
+            game_world.add_objects(tile[j], 0)
     load_stage()
     game_world.add_object(character, 0)
 
 
 def exit():
-    game_world.clear()
+    game_world.remove_object(0)
+    game_world.remove_object(1)
 
 
 
