@@ -175,7 +175,7 @@ class Death:
 next_state_table = {
     Ground: {RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, LEFT_DOWN: Ground, JUMP: Air, INSTANT_DOWN: Ground, LANDING : Ground, WAIT : Hold},
     Air: {RIGHT_DOWN: Air, RIGHT_UP: Air, LEFT_UP: Air, LEFT_DOWN: Air, JUMP: Air, INSTANT_DOWN: Air, LANDING : Ground},
-    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Air, JUMP: Air, INSTANT_DOWN: Ground}
+    Hold: {LEFT_DOWN: Ground, RIGHT_DOWN: Ground, LEFT_UP: Ground, RIGHT_UP: Ground, JUMP: Air, INSTANT_DOWN: Ground}
 }
 
 
@@ -207,7 +207,7 @@ class Character:
 
     def draw(self):
         self.cur_state.draw(self)
-
+        draw_rectangle(*self.get_bb())
 
 
     def move_instant_down(self):
@@ -226,6 +226,8 @@ class Character:
 
         pass
 
+    def get_bb(self):
+        return self.xpos - 20, self.ypos - 40, self.xpos + 20, self.ypos+40
 
 
     def contact(self):

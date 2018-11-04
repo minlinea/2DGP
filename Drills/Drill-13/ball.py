@@ -25,6 +25,7 @@ class Ball:
 
     def stop(self):
         self.fall_speed = 0
+        self.y = 70
 
 
 

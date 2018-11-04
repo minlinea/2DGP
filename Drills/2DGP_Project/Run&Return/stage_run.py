@@ -63,6 +63,11 @@ def update():
 
     for game_object in game_world.all_objects():
         game_object.update()
+    for i in range(15):
+        for tiles in tile:
+            if(collide(character, tiles[i])):
+                tiles[i].type = 2
+
     if(character.xpos >= 750):
         load_stage()
         character.xpos = 700
@@ -94,5 +99,14 @@ def handle_events():
             character.handle_event(event)
 # --------------------------------------- 키보드 입력 처리----------------------------------------------------#
 
+def collide(a, b):
+    left_a, bottom_a, right_a, top_a = a.get_bb()
+    left_b, bottom_b, right_b, top_b = b.get_bb()
+
+    if left_a > right_b: return False
+    if right_a < left_b: return False
+    if top_a < bottom_b: return False
+    if bottom_a > top_b: return False
+    return True
 
 

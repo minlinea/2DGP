@@ -77,13 +77,14 @@ def update():
         game_object.update()
     for ball in balls:
         if collide(boy, ball):
-            balls.remove(ball)
-            game_world.remove_object(ball)
+            if collide(boy, ball):
+             balls.remove(ball)
+             game_world.remove_object(ball)
     for ball in balls:
         if collide(grass, ball):
             ball.stop()
 
-    delay(0.2)
+    delay(0.9)
 
 
 def draw():
