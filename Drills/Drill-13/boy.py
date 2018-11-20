@@ -70,6 +70,7 @@ class WalkingState:
         boy.x += boy.x_velocity * game_framework.frame_time
         boy.y += boy.y_velocity * game_framework.frame_time
 
+
         boy.x = clamp(0, boy.x, boy.bg.w)
         boy.y = clamp(77, boy.y, 1087)
 
@@ -154,3 +155,5 @@ class Boy:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
 
+    def calculation_x_clamp(self, p1, p2):
+        pass
