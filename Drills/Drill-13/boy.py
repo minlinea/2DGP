@@ -73,12 +73,12 @@ class WalkingState:
 
         left_p1 = 30,77
         left_p2 = 215,1087
-        left = boy.calculation_x_clamp(left_p1, left_p2)
+
 
         right_p1 = 1812, 77
         right_p2 = 1626, 1087
-        right = boy.calculation_x_clamp(right_p1, right_p2)
-        boy.x = clamp(left, boy.x, right)
+
+        boy.x = clamp(boy.calculation_x_clamp(left_p1, left_p2), boy.x, boy.calculation_x_clamp(right_p1, right_p2))
         boy.y = clamp(77, boy.y, 1087)
 
 
