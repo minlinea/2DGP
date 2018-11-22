@@ -15,7 +15,7 @@ name = "MainState"
 
 boy = None
 background = None
-
+ball_num = 100
 balls = []
 
 
@@ -42,12 +42,12 @@ def enter():
     game_world.add_object(background, 0)
 
     global balls
-    balls = [Ball() for i in range(10)]
+    balls = [Ball() for i in range(ball_num)]
     game_world.add_objects(balls, 1)
 
     background.set_center_object(boy)#상호참조
     boy.set_background(background)
-    for i in range(10):
+    for i in range(ball_num):
         balls[i].set_background(background)
 
 
