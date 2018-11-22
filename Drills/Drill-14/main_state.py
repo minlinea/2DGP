@@ -47,6 +47,8 @@ def enter():
 
     background.set_center_object(boy)#상호참조
     boy.set_background(background)
+    for i in range(10):
+        balls[i].set_background(background)
 
 
 
