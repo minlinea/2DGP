@@ -160,7 +160,8 @@ class Boy:
     def draw(self):
         self.cur_state.draw(self)
         if(self.y >= self.bg.canvas_height):
-            self.font.draw(self.x - self.bg.window_left - 60, self.y - self.bg.window_bottom - 50, '(%5d, %5d)' % (self.x, self.y), (255, 255, 0))
+            self.font.draw(self.x - self.bg.window_left - 60, self.y - self.bg.window_bottom - 50,
+                           '(%5d, %5d)' % (self.x, self.y), (255, 255, 0))
             self.font.draw(self.x - self.bg.window_left - 60, self.y - self.bg.window_bottom - 80,
                            'eat ball : (%3d)' % (self.eat_ball_count), (255, 255, 0))
         else:
